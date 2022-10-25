@@ -1,8 +1,6 @@
-//
-// Created by Bartu Baş on 25.10.2022.
-//
+#ifndef __ppm_h__
+#define __ppm_h__
 
-#ifndef CENG477_RAYTRACER_PPM_H
-#define CENG477_RAYTRACER_PPM_H
+void write_ppm(const char* filename, unsigned char* data, int width, int height);
 
-#endif //CENG477_RAYTRACER_PPM_H
+#endif // __ppm_h__
