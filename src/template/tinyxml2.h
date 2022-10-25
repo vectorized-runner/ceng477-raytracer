@@ -1,0 +1,8 @@
+//
+// Created by Bartu Baş on 25.10.2022.
+//
+
+#ifndef CENG477_RAYTRACER_TINYXML2_H
+#define CENG477_RAYTRACER_TINYXML2_H
+
+#endif //CENG477_RAYTRACER_TINYXML2_H
