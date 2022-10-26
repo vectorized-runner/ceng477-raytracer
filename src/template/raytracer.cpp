@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
     cout << "Running Raytracer!" << endl;
 
     // Sample usage for reading an XML scene file
-    parser::Scene scene;
+    parser::p_scene scene;
 
     cout << "First arg:" << endl;
     cout << argv[0] << endl;

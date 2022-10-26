@@ -3,7 +3,7 @@
 #include <sstream>
 #include <stdexcept>
 
-void parser::Scene::loadFromXml(const std::string &filepath)
+void parser::p_scene::loadFromXml(const std::string &filepath)
 {
     tinyxml2::XMLDocument file;
     std::stringstream stream;
@@ -58,8 +58,8 @@ void parser::Scene::loadFromXml(const std::string &filepath)
 
     //Get Cameras
     element = root->FirstChildElement("Cameras");
-    element = element->FirstChildElement("Camera");
-    Camera camera;
+    element = element->FirstChildElement("p_camera");
+    p_camera camera;
     while (element)
     {
         auto child = element->FirstChildElement("Position");
@@ -86,7 +86,7 @@ void parser::Scene::loadFromXml(const std::string &filepath)
         stream >> camera.image_name;
 
         cameras.push_back(camera);
-        element = element->NextSiblingElement("Camera");
+        element = element->NextSiblingElement("p_camera");
     }
 
     //Get Lights
@@ -94,8 +94,8 @@ void parser::Scene::loadFromXml(const std::string &filepath)
     auto child = element->FirstChildElement("AmbientLight");
     stream << child->GetText() << std::endl;
     stream >> ambient_light.x >> ambient_light.y >> ambient_light.z;
-    element = element->FirstChildElement("PointLight");
-    PointLight point_light;
+    element = element->FirstChildElement("p_point_light");
+    p_point_light point_light;
     while (element)
     {
         child = element->FirstChildElement("Position");
@@ -107,13 +107,13 @@ void parser::Scene::loadFromXml(const std::string &filepath)
         stream >> point_light.intensity.x >> point_light.intensity.y >> point_light.intensity.z;
 
         point_lights.push_back(point_light);
-        element = element->NextSiblingElement("PointLight");
+        element = element->NextSiblingElement("p_point_light");
     }
 
     //Get Materials
     element = root->FirstChildElement("Materials");
-    element = element->FirstChildElement("Material");
-    Material material;
+    element = element->FirstChildElement("p_material");
+    p_material material;
     while (element)
     {
         material.is_mirror = (element->Attribute("type", "mirror") != NULL);
@@ -136,13 +136,13 @@ void parser::Scene::loadFromXml(const std::string &filepath)
         stream >> material.phong_exponent;
 
         materials.push_back(material);
-        element = element->NextSiblingElement("Material");
+        element = element->NextSiblingElement("p_material");
     }
 
     //Get VertexData
     element = root->FirstChildElement("VertexData");
     stream << element->GetText() << std::endl;
-    Vec3f vertex;
+    p_vec3f vertex;
     while (!(stream >> vertex.x).eof())
     {
         stream >> vertex.y >> vertex.z;
@@ -152,17 +152,17 @@ void parser::Scene::loadFromXml(const std::string &filepath)
 
     //Get Meshes
     element = root->FirstChildElement("Objects");
-    element = element->FirstChildElement("Mesh");
-    Mesh mesh;
+    element = element->FirstChildElement("p_mesh");
+    p_mesh mesh;
     while (element)
     {
-        child = element->FirstChildElement("Material");
+        child = element->FirstChildElement("p_material");
         stream << child->GetText() << std::endl;
         stream >> mesh.material_id;
 
         child = element->FirstChildElement("Faces");
         stream << child->GetText() << std::endl;
-        Face face;
+        p_face face;
         while (!(stream >> face.v0_id).eof())
         {
             stream >> face.v1_id >> face.v2_id;
@@ -172,17 +172,17 @@ void parser::Scene::loadFromXml(const std::string &filepath)
 
         meshes.push_back(mesh);
         mesh.faces.clear();
-        element = element->NextSiblingElement("Mesh");
+        element = element->NextSiblingElement("p_mesh");
     }
     stream.clear();
 
     //Get Triangles
     element = root->FirstChildElement("Objects");
-    element = element->FirstChildElement("Triangle");
-    Triangle triangle;
+    element = element->FirstChildElement("p_triangle");
+    p_triangle triangle;
     while (element)
     {
-        child = element->FirstChildElement("Material");
+        child = element->FirstChildElement("p_material");
         stream << child->GetText() << std::endl;
         stream >> triangle.material_id;
 
@@ -191,16 +191,16 @@ void parser::Scene::loadFromXml(const std::string &filepath)
         stream >> triangle.indices.v0_id >> triangle.indices.v1_id >> triangle.indices.v2_id;
 
         triangles.push_back(triangle);
-        element = element->NextSiblingElement("Triangle");
+        element = element->NextSiblingElement("p_triangle");
     }
 
     //Get Spheres
     element = root->FirstChildElement("Objects");
-    element = element->FirstChildElement("Sphere");
-    Sphere sphere;
+    element = element->FirstChildElement("p_sphere");
+    p_sphere sphere;
     while (element)
     {
-        child = element->FirstChildElement("Material");
+        child = element->FirstChildElement("p_material");
         stream << child->GetText() << std::endl;
         stream >> sphere.material_id;
 
@@ -213,6 +213,6 @@ void parser::Scene::loadFromXml(const std::string &filepath)
         stream >> sphere.radius;
 
         spheres.push_back(sphere);
-        element = element->NextSiblingElement("Sphere");
+        element = element->NextSiblingElement("p_sphere");
     }
 }

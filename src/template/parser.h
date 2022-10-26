@@ -8,88 +8,88 @@ namespace parser
 {
     //Notice that all the structures are as simple as possible
     //so that you are not enforced to adopt any style or design.
-    struct Vec3f
+    struct p_vec3f
     {
         float x, y, z;
     };
 
-    struct Vec3i
+    struct p_vec3i
     {
         int x, y, z;
     };
 
-    struct Vec4f
+    struct p_vec4f
     {
         float x, y, z, w;
     };
 
-    struct Camera
+    struct p_camera
     {
-        Vec3f position;
-        Vec3f gaze;
-        Vec3f up;
-        Vec4f near_plane;
+        p_vec3f position;
+        p_vec3f gaze;
+        p_vec3f up;
+        p_vec4f near_plane;
         float near_distance;
         int image_width, image_height;
         std::string image_name;
     };
 
-    struct PointLight
+    struct p_point_light
     {
-        Vec3f position;
-        Vec3f intensity;
+        p_vec3f position;
+        p_vec3f intensity;
     };
 
-    struct Material
+    struct p_material
     {
         bool is_mirror;
-        Vec3f ambient;
-        Vec3f diffuse;
-        Vec3f specular;
-        Vec3f mirror;
+        p_vec3f ambient;
+        p_vec3f diffuse;
+        p_vec3f specular;
+        p_vec3f mirror;
         float phong_exponent;
     };
 
-    struct Face
+    struct p_face
     {
         int v0_id;
         int v1_id;
         int v2_id;
     };
 
-    struct Mesh
+    struct p_mesh
     {
         int material_id;
-        std::vector<Face> faces;
+        std::vector<p_face> faces;
     };
 
-    struct Triangle
+    struct p_triangle
     {
         int material_id;
-        Face indices;
+        p_face indices;
     };
 
-    struct Sphere
+    struct p_sphere
     {
         int material_id;
         int center_vertex_id;
         float radius;
     };
 
-    struct Scene
+    struct p_scene
     {
         //Data
-        Vec3i background_color;
+        p_vec3i background_color;
         float shadow_ray_epsilon;
         int max_recursion_depth;
-        std::vector<Camera> cameras;
-        Vec3f ambient_light;
-        std::vector<PointLight> point_lights;
-        std::vector<Material> materials;
-        std::vector<Vec3f> vertex_data;
-        std::vector<Mesh> meshes;
-        std::vector<Triangle> triangles;
-        std::vector<Sphere> spheres;
+        std::vector<p_camera> cameras;
+        p_vec3f ambient_light;
+        std::vector<p_point_light> point_lights;
+        std::vector<p_material> materials;
+        std::vector<p_vec3f> vertex_data;
+        std::vector<p_mesh> meshes;
+        std::vector<p_triangle> triangles;
+        std::vector<p_sphere> spheres;
 
         //Functions
         void loadFromXml(const std::string &filepath);
