@@ -13,7 +13,14 @@ int main(int argc, char* argv[])
     // Sample usage for reading an XML scene file
     parser::Scene scene;
 
-    scene.loadFromXml(argv[1]);
+    cout << "First arg:" << endl;
+    cout << argv[0] << endl;
+
+    cout << "Last arg:" << endl;
+    cout << argv[argc - 1] << endl;
+
+    // TODO-Use the correct argument here for the final build!
+    scene.loadFromXml(argv[argc - 1]);
 
     cout << "This is after scene load!" << endl;
 
