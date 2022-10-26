@@ -1,3 +1,8 @@
 # ninja log v5
-0	261	1666552129212921491	CMakeFiles/ceng477_raytracer.dir/main.cpp.o	8035c3af3185c8cd
 262	294	1666552129247486314	ceng477_raytracer	d53f8cbd34cd86f9
+0	5	0	clean	89a51a0fa1747683
+1	38	1666775199484336453	CMakeFiles/ceng477_raytracer.dir/src/template/ppm.cpp.o	6fdfc6c80a4971e5
+1	95	1666775199540754284	CMakeFiles/ceng477_raytracer.dir/src/template/tinyxml2.cpp.o	60fc10214ec587d0
+1	260	1666775199705145984	CMakeFiles/ceng477_raytracer.dir/src/template/raytracer.cpp.o	9b64f261cc862cea
+0	330	1666775199775396509	CMakeFiles/ceng477_raytracer.dir/src/template/parser.cpp.o	48734a64566894a0
+330	375	1666775199822239554	ceng477_raytracer	627fce9542ad371e
