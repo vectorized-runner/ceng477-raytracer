@@ -2,14 +2,20 @@
 #include "parser.h"
 #include "ppm.h"
 
+using namespace std;
+
 typedef unsigned char RGB[3];
 
 int main(int argc, char* argv[])
 {
+    cout << "Running Raytracer!" << endl;
+
     // Sample usage for reading an XML scene file
     parser::Scene scene;
 
     scene.loadFromXml(argv[1]);
+
+    cout << "This is after scene load!" << endl;
 
     // The code below creates a test pattern and writes
     // it to a PPM file to demonstrate the usage of the
@@ -47,6 +53,10 @@ int main(int argc, char* argv[])
         }
     }
 
+    cout << "This is before write ppm!" << endl;
+
     write_ppm("test.ppm", image, width, height);
+
+    cout << "Finished!" << endl;
 
 }
