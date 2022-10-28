@@ -22,9 +22,14 @@ struct float3 {
     }
 };
 
-namespace data {
-
+struct CameraData
+{
+    float3 Position;
+    float3 Forward;
+    float3 Right;
+    float3 Up;
 }
+
 
 namespace math {
 
