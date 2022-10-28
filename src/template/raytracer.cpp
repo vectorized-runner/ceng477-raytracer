@@ -6,8 +6,42 @@ using namespace std;
 
 typedef unsigned char RGB[3];
 
-int main(int argc, char* argv[])
-{
+struct float3 {
+    float x;
+    float y;
+    float z;
+
+    float3(float x, float y, float z) {
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
+
+    const void print(){
+        printf("(%.3f, %.3f, %.3f)", x, y, z);
+    }
+};
+
+namespace data {
+
+}
+
+namespace math {
+
+}
+
+inline void debug_assert(bool condition) {
+    if (!condition) {
+        printf("Assertion Failed.");
+    }
+}
+
+int main(int argc, char *argv[]) {
+    auto f = float3(0, 0, 0);
+    f.print();
+
+    return 0;
+
     cout << "Running Raytracer!" << endl;
 
     // Sample usage for reading an XML scene file
@@ -33,26 +67,24 @@ int main(int argc, char* argv[])
 
     const RGB BAR_COLOR[8] =
             {
-                    { 255, 255, 255 },  // 100% White
-                    { 255, 255,   0 },  // Yellow
-                    {   0, 255, 255 },  // Cyan
-                    {   0, 255,   0 },  // Green
-                    { 255,   0, 255 },  // Magenta
-                    { 255,   0,   0 },  // Red
-                    {   0,   0, 255 },  // Blue
-                    {   0,   0,   0 },  // Black
+                    {255, 255, 255},  // 100% White
+                    {255, 255, 0},  // Yellow
+                    {0,   255, 255},  // Cyan
+                    {0,   255, 0},  // Green
+                    {255, 0,   255},  // Magenta
+                    {255, 0,   0},  // Red
+                    {0,   0,   255},  // Blue
+                    {0,   0,   0},  // Black
             };
 
     int width = 640, height = 480;
     int columnWidth = width / 8;
 
-    unsigned char* image = new unsigned char [width * height * 3];
+    unsigned char *image = new unsigned char[width * height * 3];
 
     int i = 0;
-    for (int y = 0; y < height; ++y)
-    {
-        for (int x = 0; x < width; ++x)
-        {
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
             int colIdx = x / columnWidth;
             image[i++] = BAR_COLOR[colIdx][0];
             image[i++] = BAR_COLOR[colIdx][1];
