@@ -28,8 +28,18 @@ struct CameraData
     float3 Forward;
     float3 Right;
     float3 Up;
-}
+};
 
+struct Resolution
+{
+    int X;
+    int Y;
+
+    Resolution(int x, int y){
+        this->X = x;
+        this->Y = y;
+    }
+};
 
 namespace math {
 
