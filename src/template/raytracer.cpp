@@ -101,7 +101,13 @@ struct Ray
 struct AmbientLightData
 {
     float3 Radiance;
-}
+};
+
+struct PointLightData
+{
+    float3 Position;
+    float Intensity;
+};
 
 void debug_assert(bool condition) {
     if (!condition) {
