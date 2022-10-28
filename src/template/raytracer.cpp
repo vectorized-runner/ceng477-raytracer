@@ -17,7 +17,7 @@ struct float3 {
         this->z = z;
     }
 
-    const void print(){
+    const void print() {
         printf("(%.3f, %.3f, %.3f)", x, y, z);
     }
 };
@@ -25,37 +25,51 @@ struct float3 {
 
 namespace math {
     static float min(float x, float y) { return x < y ? x : y; }
+
     static float3 min(float3 x, float3 y) { return float3(min(x.x, y.x), min(x.y, y.y), min(x.z, y.z)); }
 
     static float max(float x, float y) { return x > y ? x : y; }
+
     static float3 max(float3 x, float3 y) { return float3(max(x.x, y.x), max(x.y, y.y), max(x.z, y.z)); }
 
 }
 
-struct CameraData
-{
+struct CameraData {
     float3 Position;
     float3 Forward;
     float3 Right;
     float3 Up;
 };
 
-struct Resolution
-{
+struct Resolution {
     int X;
     int Y;
 
-    Resolution(int x, int y){
+    Resolution(int x, int y) {
         this->X = x;
         this->Y = y;
     }
 };
 
-namespace math {
+using namespace math;
 
-}
+struct AABB {
+    float3 Min;
+    float3 Max;
 
-inline void debug_assert(bool condition) {
+    void Encapsulate(float3 point) {
+        Min = min(point, Min);
+        Max = max(point, Max);
+    }
+
+    void Encapsulate(AABB other) {
+        Min = min(Min, other.Min);
+        Max = max(Max, other.Max);
+    }
+};
+
+
+void debug_assert(bool condition) {
     if (!condition) {
         printf("Assertion Failed.");
     }
