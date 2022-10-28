@@ -17,8 +17,8 @@ struct float3 {
         this->z = z;
     }
 
-    const void print() {
-        printf("(%.3f, %.3f, %.3f)", x, y, z);
+    string toString(){
+        return "(" + to_string(x) + ", " + to_string(y) + ", " + to_string(z) + ")";
     }
 };
 
@@ -98,6 +98,11 @@ struct Ray
     }
 };
 
+struct AmbientLightData
+{
+    float3 Radiance;
+}
+
 void debug_assert(bool condition) {
     if (!condition) {
         printf("Assertion Failed.");
@@ -106,7 +111,6 @@ void debug_assert(bool condition) {
 
 int main(int argc, char *argv[]) {
     auto f = float3(0, 0, 0);
-    f.print();
 
     return 0;
 
