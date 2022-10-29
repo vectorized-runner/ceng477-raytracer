@@ -33,6 +33,10 @@ namespace RayTracer {
             this->z = z;
         }
 
+        float3 yzx() {
+            return float3(y, z, x);
+        }
+
         float3 operator+(float3 other) const {
             return float3(x + other.x, y + other.y, z + other.z);
         }
@@ -47,6 +51,10 @@ namespace RayTracer {
 
         float3 operator*(float other) const {
             return float3(x * other, y * other, z * other);
+        }
+
+        float3 operator/(float other) const {
+            return float3(x / other, y / other, z / other);
         }
 
         string ToString() const {
