@@ -8,10 +8,10 @@
 namespace RayTracer {
 
     struct TriangleData {
+        int Count;
         Triangle* Triangles;
         float3* Normals;
         MaterialData* Materials;
-        int Count;
     }; // RayTracer
 }
 #endif //CENG477_RAYTRACER_TRIANGLEDATA_H

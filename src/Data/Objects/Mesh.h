@@ -12,8 +12,8 @@ namespace RayTracer {
         int TriangleCount;
         Triangle* Triangles;
         float3* TriangleNormals;
-        MaterialData MaterialData;
         AABB AABB;
+        MaterialData MaterialData;
     };
 
 } // RayTracer
