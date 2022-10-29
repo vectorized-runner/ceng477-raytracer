@@ -54,18 +54,25 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
         auto& material = materials[i];
         auto ambient = parseMat.ambient;
         auto diffuse = parseMat.diffuse;
-        auto specularReflectance = parseMat.specular;
-        auto mirrorReflectance = parseMat.mirror;
+        auto specular = parseMat.specular;
+        auto mirror = parseMat.mirror;
         auto phongExponent = parseMat.phong_exponent;
         auto isMirror = parseMat.is_mirror;
 
         material.AmbientReflectance = float3(ambient.x, ambient.y, ambient.z);
         material.DiffuseReflectance = float3(diffuse.x, diffuse.y, diffuse.z);
-        material.SpecularReflectance = specularReflectance;
-        material.MirrorReflectance = mirrorReflectance;
+        material.SpecularReflectance = float3(specular.x, specular.y, specular.z);
+        material.MirrorReflectance = float3(mirror.x, mirror.y, mirror.z);
         material.PhongExponent = phongExponent;
         material.IsMirror = isMirror;
     }
+
+    // TODO: Vertex
+    // TODO: Meshes
+    // TODO: Triangles
+    // TODO: Spheres
+
+    delete[] materials;
 
 }
 
