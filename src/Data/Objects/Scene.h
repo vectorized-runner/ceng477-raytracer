@@ -8,6 +8,7 @@
 #include "../Lights/PointLightData.h"
 #include "../Lights/AmbientLightData.h"
 #include "../../Math/float3u.h"
+#include "../../Debug/Debug.h"
 
 using namespace std;
 
@@ -109,6 +110,40 @@ namespace RayTracer {
             return false;
         }
     };
+
+    // TODO-Port:
+    // TODO-Optimize: Skip Quadratic Equation part, use the most optimized math formula only
+    // TODO-Optimize: Store RadiusSquared on Spheres?
+    // TODO-Optimize: Only need to return for 1 root, not 2 roots, not used.
+    // TODO-Optimize: On 2 root case, if t0 is greater than zero, we don't have to check t1.
+    static bool RaySphereIntersection(Ray ray, Sphere sphere, float& closestIntersectionDistance)
+    {
+        Debug::Assert(Math::IsNormalized(ray.Direction));
+
+        auto oc = ray.Origin - sphere.Center;
+        auto uoc = Math::Dot(ray.Direction, oc);
+        auto discriminant = uoc * uoc - (Math::LengthSq(oc) - sphere.RadiusSquared);
+
+        if (discriminant < 0)
+        {
+            closestIntersectionDistance = 0.0f;
+            return false;
+        }
+
+        // Ignore discriminant == 0 because it won't practically happen
+        auto sqrtDiscriminant = sqrt(discriminant);
+        auto bigRoot = -uoc + sqrtDiscriminant;
+
+        if (bigRoot < 0)
+        {
+            closestIntersectionDistance = 0.0f;
+            return false;
+        }
+
+        auto smallRoot = -uoc - sqrtDiscriminant;
+        closestIntersectionDistance = smallRoot < 0 ? bigRoot : smallRoot;
+        return true;
+    }
 
 } // RayTracer
 
