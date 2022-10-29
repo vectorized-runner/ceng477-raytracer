@@ -9,6 +9,11 @@ namespace RayTracer {
     struct IntersectionResult {
         ObjectId ObjectId;
         float Distance;
+
+        IntersectionResult(struct ObjectId objectId, float distance) {
+            ObjectId = objectId;
+            Distance = distance;
+        }
     };
 
 } // RayTracer
