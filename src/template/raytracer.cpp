@@ -27,17 +27,6 @@ namespace math {
 
 }
 
-
-struct Resolution {
-    int X;
-    int Y;
-
-    Resolution(int x, int y) {
-        this->X = x;
-        this->Y = y;
-    }
-};
-
 using namespace math;
 
 struct AABB {
