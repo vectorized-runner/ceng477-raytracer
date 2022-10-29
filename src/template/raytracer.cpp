@@ -1,27 +1,12 @@
 #include <iostream>
 #include "parser.h"
 #include "ppm.h"
+#include "../float3.h"
 
 using namespace std;
+using namespace RayTracer;
 
 typedef unsigned char RGB[3];
-
-struct float3 {
-    float x;
-    float y;
-    float z;
-
-    float3(float x, float y, float z) {
-        this->x = x;
-        this->y = y;
-        this->z = z;
-    }
-
-    string toString(){
-        return "(" + to_string(x) + ", " + to_string(y) + ", " + to_string(z) + ")";
-    }
-};
-
 
 namespace math {
     static float min(float x, float y) {
@@ -94,7 +79,7 @@ struct Ray
 
     string toString()
     {
-        return "Origin: " + Origin.toString() + ", Direction: " + Direction.toString();
+        return "Origin: " + Origin.ToString() + ", Direction: " + Direction.ToString();
     }
 };
 
