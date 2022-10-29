@@ -64,6 +64,50 @@ namespace RayTracer {
 
             return tmin <= tmax;
         }
+
+        // TODO-Port:
+        static bool RayTriangleIntersection(Ray ray, Triangle triangle, float &intersectionDistance) {
+            auto vertex0 = triangle.Vertex0;
+            auto vertex1 = triangle.Vertex1;
+            auto vertex2 = triangle.Vertex2;
+            auto edge1 = vertex1 - vertex0;
+            auto edge2 = vertex2 - vertex0;
+            auto h = Math::cross(ray.Direction, edge2);
+            auto a = Math::dot(edge1, h);
+            auto epsilon = Math::Epsilon;
+
+            if (a > -epsilon && a < epsilon) {
+                intersectionDistance = 0.0f;
+                return false; // This ray is parallel to this triangle.
+            }
+
+            auto f = 1.0f / a;
+            auto s = ray.Origin - vertex0;
+            auto u = f * Math::dot(s, h);
+            if (u < 0.0f || u > 1.0f) {
+                intersectionDistance = 0.0f;
+                return false;
+            }
+
+            auto q = Math::cross(s, edge1);
+            auto v = f * Math::dot(ray.Direction, q);
+            if (v < 0.0f || u + v > 1.0f) {
+                intersectionDistance = 0.0f;
+                return false;
+            }
+
+            // At this stage we can compute t to find out where the intersection point is on the line.
+            auto t = f * Math::dot(edge2, q);
+            if (t > epsilon) // ray intersection
+            {
+                intersectionDistance = t;
+                return true;
+            }
+
+            // This means that there is a line intersection but not a ray intersection.
+            intersectionDistance = 0.0f;
+            return false;
+        }
     };
 
 } // RayTracer
