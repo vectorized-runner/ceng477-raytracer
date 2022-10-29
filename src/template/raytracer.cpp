@@ -7,6 +7,8 @@
 #include "../Data/Lights/PointLightData.h"
 #include "../Data/Lights/AmbientLightData.h"
 #include "../Data/Objects/Sphere.h"
+#include "../Data/Objects/Mesh.h"
+#include "../Data/Objects/Scene.h"
 
 using namespace std;
 using namespace RayTracer;
@@ -27,6 +29,9 @@ int main(int argc, char *argv[]) {
     string s2 = (float3(0,0,0) - float3(1,2,3)).ToString();
 
     Sphere sphere;
+    Triangle triangle;
+    Mesh mesh;
+    Scene myscene;
 
     cout << sphere.Center.ToString() << endl;
     cout << sphere.RadiusSquared << endl;
