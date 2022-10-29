@@ -8,6 +8,10 @@
 namespace RayTracer {
 
     struct Math {
+
+        constexpr static const float floatMax = numeric_limits<float>::max();
+        constexpr static const float floatMin = numeric_limits<float>::min();
+
         // TODO: Unity is lhs, ensure this is correct
         static float3 cross(float3 x, float3 y) {
             return (x * y.yzx() - x.yzx() * y).yzx();
