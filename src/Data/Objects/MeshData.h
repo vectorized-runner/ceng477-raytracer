@@ -8,6 +8,7 @@ namespace RayTracer {
 
     struct MeshData {
         Mesh* Meshes;
+        int Count;
     };
 
 } // RayTracer

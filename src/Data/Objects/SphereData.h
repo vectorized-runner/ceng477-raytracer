@@ -10,6 +10,7 @@ namespace RayTracer {
     struct SphereData {
         Sphere* Spheres;
         MaterialData* Materials;
+        int Count;
     };
 
 
