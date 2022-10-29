@@ -11,44 +11,50 @@ namespace RayTracer {
 
     struct Math {
 
-        constexpr static const float floatMax = numeric_limits<float>::max();
-        constexpr static const float floatMin = numeric_limits<float>::min();
+        constexpr static const float FloatMax = numeric_limits<float>::max();
+        constexpr static const float FloatMin = numeric_limits<float>::min();
         constexpr static const float Epsilon = 0.0001f;
 
         // TODO: Unity is lhs, ensure this is correct
-        static float3 cross(float3 x, float3 y) {
+        static float3 Cross(float3 x, float3 y) {
             return (x * y.yzx() - x.yzx() * y).yzx();
         }
 
-        static float3 length(float3 v) {
-            return sqrt(dot(v, v));
+        static float3 Length(float3 v) {
+            return sqrt(Dot(v, v));
         }
 
-        static float dot(float3 x, float3 y) {
+        static float Dot(float3 x, float3 y) {
             return x.x * y.x + x.y * y.y + x.z * y.z;
         }
 
-        static float min(float x, float y) {
+        static float Min(float x, float y) {
             return x < y ? x : y;
         }
 
-        static float3 min(float3 x, float3 y) {
-            return float3(min(x.x, y.x), min(x.y, y.y), min(x.z, y.z));
+        static float3 Min(float3 x, float3 y) {
+            return float3(Min(x.x, y.x), Min(x.y, y.y), Min(x.z, y.z));
         }
 
-        static float max(float x, float y) {
+        static float Max(float x, float y) {
             return x > y ? x : y;
         }
 
-        static float3 max(float3 x, float3 y) {
-            return float3(max(x.x, y.x), max(x.y, y.y), max(x.z, y.z));
+        static float3 Max(float3 x, float3 y) {
+            return float3(Max(x.x, y.x), Max(x.y, y.y), Max(x.z, y.z));
         }
 
-        static float3 rcp(float3 x) {
+        static float3 Rcp(float3 x) {
             return 1.0f / x;
         }
 
+        static float LengthSq(float3 v) {
+            return Dot(v, v);
+        }
 
+        static bool IsLengthEqual(float3 v, float length) {
+            return abs(LengthSq(v) - length * length) < Epsilon;
+        }
     };
 
 } // RayTracer

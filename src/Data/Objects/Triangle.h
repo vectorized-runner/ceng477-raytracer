@@ -14,8 +14,8 @@ namespace RayTracer {
 
         // TODO: Ensure this normal is correct (read the homework docs for this)
         float3 GetNormal() const {
-            auto v = Math::cross(Vertex2 - Vertex0, Vertex1 - Vertex0);
-            return v / Math::length(v);
+            auto v = Math::Cross(Vertex2 - Vertex0, Vertex1 - Vertex0);
+            return v / Math::Length(v);
         }
 
         float3 GetCenter() const {

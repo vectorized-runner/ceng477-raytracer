@@ -25,8 +25,8 @@ namespace RayTracer {
 
         void CalculateAABB() {
             auto aabb = AABB();
-            aabb.Min = Math::floatMax;
-            aabb.Max = Math::floatMin;
+            aabb.Min = Math::FloatMax;
+            aabb.Max = Math::FloatMin;
 
             for (int i = 0; i < MeshData.Count; ++i) {
                 aabb.Encapsulate(MeshData.Meshes[i].AABB);
@@ -48,7 +48,7 @@ namespace RayTracer {
 
         // TODO-Port:
         static bool RayAABBIntersection(Ray ray, const AABB box) {
-            auto inverseDir = float3u(Math::rcp(ray.Direction));
+            auto inverseDir = float3u(Math::Rcp(ray.Direction));
             auto tmin = 0.0f;
             auto tmax = INFINITY;
             auto boxMin = float3u(box.Min);
@@ -72,8 +72,8 @@ namespace RayTracer {
             auto vertex2 = triangle.Vertex2;
             auto edge1 = vertex1 - vertex0;
             auto edge2 = vertex2 - vertex0;
-            auto h = Math::cross(ray.Direction, edge2);
-            auto a = Math::dot(edge1, h);
+            auto h = Math::Cross(ray.Direction, edge2);
+            auto a = Math::Dot(edge1, h);
             auto epsilon = Math::Epsilon;
 
             if (a > -epsilon && a < epsilon) {
@@ -83,21 +83,21 @@ namespace RayTracer {
 
             auto f = 1.0f / a;
             auto s = ray.Origin - vertex0;
-            auto u = f * Math::dot(s, h);
+            auto u = f * Math::Dot(s, h);
             if (u < 0.0f || u > 1.0f) {
                 intersectionDistance = 0.0f;
                 return false;
             }
 
-            auto q = Math::cross(s, edge1);
-            auto v = f * Math::dot(ray.Direction, q);
+            auto q = Math::Cross(s, edge1);
+            auto v = f * Math::Dot(ray.Direction, q);
             if (v < 0.0f || u + v > 1.0f) {
                 intersectionDistance = 0.0f;
                 return false;
             }
 
             // At this stage we can compute t to find out where the intersection point is on the line.
-            auto t = f * Math::dot(edge2, q);
+            auto t = f * Math::Dot(edge2, q);
             if (t > epsilon) // ray intersection
             {
                 intersectionDistance = t;
