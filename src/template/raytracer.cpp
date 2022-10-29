@@ -9,29 +9,6 @@ using namespace RayTracer;
 
 typedef unsigned char RGB[3];
 
-
-struct Ray
-{
-    float3 Origin;
-    float3 Direction;
-
-    Ray(float3 origin, float3 direction) : Origin(origin), Direction(direction)
-    {
-    }
-
-    float3 GetPoint(float distance)
-    {
-        // TODO: Handle multiplication
-        return float3(0, 0, 0);
-        // return Origin + Direction * distance;
-    }
-
-    string toString()
-    {
-        return "Origin: " + Origin.ToString() + ", Direction: " + Direction.ToString();
-    }
-};
-
 struct AmbientLightData
 {
     float3 Radiance;
