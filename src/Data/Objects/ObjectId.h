@@ -6,9 +6,9 @@ namespace RayTracer {
 
     enum ObjectType {
         None,
-        Sphere,
-        Triangle,
-        MeshTriangle,
+        SphereObject,
+        TriangleObject,
+        MeshTriangleObject,
     };
 
     struct ObjectId {
