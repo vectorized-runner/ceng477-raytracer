@@ -9,6 +9,7 @@
 namespace RayTracer {
 
     struct Mesh {
+        int TriangleCount;
         Triangle* Triangles;
         float3* TriangleNormals;
         MaterialData MaterialData;

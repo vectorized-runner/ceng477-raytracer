@@ -9,6 +9,7 @@
 #include "../Lights/AmbientLightData.h"
 #include "../../Math/float3u.h"
 #include "../../Debug/Debug.h"
+#include "../Collision/IntersectionResult.h"
 
 using namespace std;
 
@@ -109,41 +110,106 @@ namespace RayTracer {
             intersectionDistance = 0.0f;
             return false;
         }
+
+        // TODO-Port:
+        // TODO-Optimize: Skip Quadratic Equation part, use the most optimized math formula only
+        // TODO-Optimize: Store RadiusSquared on Spheres?
+        // TODO-Optimize: Only need to return for 1 root, not 2 roots, not used.
+        // TODO-Optimize: On 2 root case, if t0 is greater than zero, we don't have to check t1.
+        static bool RaySphereIntersection(Ray ray, Sphere sphere, float &closestIntersectionDistance) {
+            Debug::Assert(Math::IsNormalized(ray.Direction));
+
+            auto oc = ray.Origin - sphere.Center;
+            auto uoc = Math::Dot(ray.Direction, oc);
+            auto discriminant = uoc * uoc - (Math::LengthSq(oc) - sphere.RadiusSquared);
+
+            if (discriminant < 0) {
+                closestIntersectionDistance = 0.0f;
+                return false;
+            }
+
+            // Ignore discriminant == 0 because it won't practically happen
+            auto sqrtDiscriminant = sqrt(discriminant);
+            auto bigRoot = -uoc + sqrtDiscriminant;
+
+            if (bigRoot < 0) {
+                closestIntersectionDistance = 0.0f;
+                return false;
+            }
+
+            auto smallRoot = -uoc - sqrtDiscriminant;
+            closestIntersectionDistance = smallRoot < 0 ? bigRoot : smallRoot;
+            return true;
+        }
+
+        IntersectionResult IntersectRay(Ray ray) {
+            auto smallestIntersectionDistance = Math::FloatMax;
+            auto hitObject = ObjectId(ObjectType::None, -1, -1);
+
+            // If ray doesn't intersect with Scene AABB, there's no need to check any object
+            if (!RayAABBIntersection(ray, selfAABB)) {
+                return IntersectionResult(hitObject, smallestIntersectionDistance);
+            }
+
+            for (int meshIndex = 0; meshIndex < MeshData.Count; meshIndex++) {
+                auto& mesh = MeshData.Meshes[meshIndex];
+                if (RayAABBIntersection(ray, mesh.AABB)) {
+                    for (auto triIndex = 0; triIndex < mesh.TriangleCount; triIndex++) {
+                        auto& triangle = mesh.Triangles[triIndex];
+
+                        // TODO: Does this work?
+                        auto intersectionDistance = 0.0f;
+
+                        if (RayTriangleIntersection(ray, triangle, intersectionDistance))
+                        {
+                            if (smallestIntersectionDistance > intersectionDistance) {
+                                smallestIntersectionDistance = intersectionDistance;
+                                hitObject.Type = ObjectType::MeshTriangleObject;
+                                hitObject.Index = triIndex;
+                                hitObject.MeshIndex = meshIndex;
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (auto sphereIndex = 0; sphereIndex < SphereData.Count; sphereIndex++) {
+                auto sphere = SphereData.Spheres[sphereIndex];
+                // TODO: Does this work?
+                auto closestIntersectionDistance = 0.0f;
+
+                if (RaySphereIntersection(ray, sphere, closestIntersectionDistance))
+                {
+                    if (smallestIntersectionDistance > closestIntersectionDistance) {
+                        smallestIntersectionDistance = closestIntersectionDistance;
+                        hitObject.Type = ObjectType::SphereObject;
+                        hitObject.Index = sphereIndex;
+                    }
+                }
+            }
+
+            var triangles = TriangleData.Triangles;
+            for (var triIndex = 0; triIndex < triangles.Count; triIndex++) {
+                var triangle = triangles[triIndex];
+                if (RayTriangleIntersection(ray, triangle, out var
+                intersectionDistance))
+                {
+                    if (smallestIntersectionDistance > intersectionDistance) {
+                        smallestIntersectionDistance = intersectionDistance;
+                        hitObject.Type = ObjectType.Triangle;
+                        hitObject.Index = triIndex;
+                    }
+                }
+            }
+
+            return new IntersectionResult
+                    {
+                            Distance = smallestIntersectionDistance,
+                            ObjectId = hitObject,
+                    };
+        }
     };
 
-    // TODO-Port:
-    // TODO-Optimize: Skip Quadratic Equation part, use the most optimized math formula only
-    // TODO-Optimize: Store RadiusSquared on Spheres?
-    // TODO-Optimize: Only need to return for 1 root, not 2 roots, not used.
-    // TODO-Optimize: On 2 root case, if t0 is greater than zero, we don't have to check t1.
-    static bool RaySphereIntersection(Ray ray, Sphere sphere, float& closestIntersectionDistance)
-    {
-        Debug::Assert(Math::IsNormalized(ray.Direction));
-
-        auto oc = ray.Origin - sphere.Center;
-        auto uoc = Math::Dot(ray.Direction, oc);
-        auto discriminant = uoc * uoc - (Math::LengthSq(oc) - sphere.RadiusSquared);
-
-        if (discriminant < 0)
-        {
-            closestIntersectionDistance = 0.0f;
-            return false;
-        }
-
-        // Ignore discriminant == 0 because it won't practically happen
-        auto sqrtDiscriminant = sqrt(discriminant);
-        auto bigRoot = -uoc + sqrtDiscriminant;
-
-        if (bigRoot < 0)
-        {
-            closestIntersectionDistance = 0.0f;
-            return false;
-        }
-
-        auto smallRoot = -uoc - sqrtDiscriminant;
-        closestIntersectionDistance = smallRoot < 0 ? bigRoot : smallRoot;
-        return true;
-    }
 
 } // RayTracer
 
