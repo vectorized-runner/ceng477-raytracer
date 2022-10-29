@@ -24,7 +24,6 @@ void debug_assert(bool condition) {
 }
 
 int main(int argc, char *argv[]) {
-    auto f = float3(0, 0, 0);
 
     string s1 = (float3(1,2,3) * float3(1,2,3)).ToString();
     string s2 = (float3(0,0,0) - float3(1,2,3)).ToString();
@@ -34,9 +33,9 @@ int main(int argc, char *argv[]) {
     Mesh mesh;
     Scene myscene;
 
-    cout << sphere.Center.ToString() << endl;
-    cout << sphere.RadiusSquared << endl;
+    float3u f = float3u(2);
 
+    cout << f.arr[0] << endl;
 
     return 0;
 

@@ -3,6 +3,8 @@
 #define CENG477_RAYTRACER_MATH_H
 
 #include "float3.h"
+#include "../Data/Collision/Ray.h"
+#include "../Data/Collision/AABB.h"
 #include <cmath>
 
 namespace RayTracer {
@@ -44,6 +46,8 @@ namespace RayTracer {
         static float3 rcp(float3 x) {
             return 1.0f / x;
         }
+
+
     };
 
 } // RayTracer

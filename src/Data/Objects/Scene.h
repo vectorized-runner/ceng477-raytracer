@@ -7,6 +7,7 @@
 #include "SphereData.h"
 #include "../Lights/PointLightData.h"
 #include "../Lights/AmbientLightData.h"
+#include "../Math/float3u.h"
 
 using namespace std;
 
@@ -43,6 +44,25 @@ namespace RayTracer {
             }
 
             selfAABB = aabb;
+        }
+
+        // TODO-Port:
+        static bool RayAABBIntersection(Ray ray, const AABB box) {
+            auto inverseDir = float3u(Math::rcp(ray.Direction));
+            auto tmin = 0.0f;
+            auto tmax = INFINITY;
+            auto boxMin = float3u(box.Min);
+            auto boxMax = float3u(box.Max);
+            auto origin = float3u(ray.Origin);
+
+            for (int i = 0; i < 3; ++i) {
+                auto t1 = (boxMin.arr[i] - origin.arr[i]) * inverseDir.arr[i];
+                auto t2 = (boxMax.arr[i] - origin.arr[i]) * inverseDir.arr[i];
+                tmin = min(max(t1, tmin), max(t2, tmin));
+                tmax = max(min(t1, tmax), min(t2, tmax));
+            }
+
+            return tmin <= tmax;
         }
     };
 
