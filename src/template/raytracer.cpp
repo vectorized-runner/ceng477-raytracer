@@ -2,28 +2,13 @@
 #include "parser.h"
 #include "ppm.h"
 #include "../float3.h"
+#include "../Data/Collision/AABB.h"
 
 using namespace std;
 using namespace RayTracer;
 
 typedef unsigned char RGB[3];
 
-
-
-struct AABB {
-    float3 Min;
-    float3 Max;
-
-    void Encapsulate(float3 point) {
-        Min = min(point, Min);
-        Max = max(point, Max);
-    }
-
-    void Encapsulate(AABB other) {
-        Min = min(Min, other.Min);
-        Max = max(Max, other.Max);
-    }
-};
 
 struct Ray
 {
@@ -75,7 +60,11 @@ void debug_assert(bool condition) {
 int main(int argc, char *argv[]) {
     auto f = float3(0, 0, 0);
 
-    printf("This code is doing nothing!");
+    string s1 = (float3(1,2,3) * float3(1,2,3)).ToString();
+    string s2 = (float3(0,0,0) - float3(1,2,3)).ToString();
+
+    AABB aabb;
+    cout << s2 << endl;
 
     return 0;
 
