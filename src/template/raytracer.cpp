@@ -27,12 +27,6 @@ namespace math {
 
 }
 
-struct CameraData {
-    float3 Position;
-    float3 Forward;
-    float3 Right;
-    float3 Up;
-};
 
 struct Resolution {
     int X;
@@ -110,6 +104,8 @@ void debug_assert(bool condition) {
 
 int main(int argc, char *argv[]) {
     auto f = float3(0, 0, 0);
+
+    printf("This code is doing nothing!");
 
     return 0;
 
