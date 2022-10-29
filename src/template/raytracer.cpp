@@ -108,13 +108,13 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     for (int i = 0; i < meshCount; ++i) {
         auto& parseMesh = parseScene.meshes[i];
         auto& mesh = meshes[i];
-        auto triangleCount = parseMesh.faces.size();
+        auto meshTriangles = parseMesh.faces.size();
         mesh.MaterialData = materials[parseMesh.material_id - 1];
-        mesh.TriangleCount = triangleCount;
-        mesh.Triangles = new Triangle[triangleCount];
-        mesh.TriangleNormals = new float3[triangleCount];
+        mesh.TriangleCount = meshTriangles;
+        mesh.Triangles = new Triangle[meshTriangles];
+        mesh.TriangleNormals = new float3[meshTriangles];
 
-        for (int j = 0; j < triangleCount; ++j) {
+        for (int j = 0; j < meshTriangles; ++j) {
             auto& parseTriangle = parseMesh.faces[j];
             auto& meshTriangle = mesh.Triangles[j];
             auto v0 = vertices[parseTriangle.v0_id - 1];
@@ -125,7 +125,6 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
             meshTriangle.Vertex2 = float3(v2.x, v2.y, v2.z);
             mesh.TriangleNormals[j] = triangles[i].GetNormal();
         }
-
     }
 
     // TODO: We have to run AABB calculations and stuff
