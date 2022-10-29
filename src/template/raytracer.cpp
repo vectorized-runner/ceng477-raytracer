@@ -33,13 +33,14 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     // TODO: Parse cameras here.
 
     auto ambientLight = parseScene.ambient_light;
-    scene.AmbientLight.Radiance = float3(ambientLight.x, ambientLight.y, ambientLight.z);
+    AmbientLightData ambientLightData;
+    ambientLightData.Radiance = float3(ambientLight.x, ambientLight.y, ambientLight.z);
 
     auto pointLightCount = parseScene.point_lights.size();
-    scene.PointLights = new PointLightData[pointLightCount];
+    auto pointLights = new PointLightData[pointLightCount];
     for (int i = 0; i < pointLightCount; ++i) {
         auto& parseLight = parseScene.point_lights[i];
-        auto& light = scene.PointLights[i];
+        auto& light = pointLights[i];
         auto intensity = parseLight.intensity;
         auto position = parseLight.position;
         light.Intensity = float3(intensity.x, intensity.y, intensity.z);
@@ -127,13 +128,31 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
         }
     }
 
-    // TODO: We have to run AABB calculations and stuff
+    MeshData meshData;
+    meshData.Meshes = meshes;
 
-    // TODO: Vertex
-    // TODO: Meshes
-    // TODO: Triangles
-    // TODO: Spheres
-    // TODO: Sync all data back to scene before exiting this method
+    TriangleData triangleData;
+    triangleData.Triangles = triangles;
+    triangleData.Count = triangleCount;
+    triangleData.Materials = triangleMaterials;
+    triangleData.Normals = triangleNormals;
+
+    SphereData sphereData;
+    sphereData.Count = sphereCount;
+    sphereData.Materials = sphereMaterials;
+    sphereData.Spheres = spheres;
+
+    scene.SphereData = sphereData;
+    scene.MeshData = meshData;
+    scene.TriangleData = triangleData;
+
+    scene.PointLightCount = pointLightCount;
+    scene.PointLights = pointLights;
+
+    scene.AmbientLight = ambientLightData;
+
+    // TODO: Mesh AABB
+    // TODO: Scene AABB
 
     delete[] materials;
     delete[] vertices;

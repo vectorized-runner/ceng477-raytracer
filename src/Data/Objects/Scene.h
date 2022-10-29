@@ -20,6 +20,7 @@ namespace RayTracer {
         MeshData MeshData;
         SphereData SphereData;
 
+        int PointLightCount;
         PointLightData* PointLights;
         AmbientLightData AmbientLight;
 
