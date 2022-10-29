@@ -10,48 +10,33 @@
 #include "../Data/Objects/Mesh.h"
 #include "../Data/Objects/Scene.h"
 #include "../Math/float3u.h"
+#include "../Data/Shading/Rgb.h"
 
 using namespace std;
 using namespace RayTracer;
 
 typedef unsigned char RGB[3];
 
+void ConvertTemplateDataIntoSelfData(parser::p_scene& scene){
 
-void debug_assert(bool condition) {
-    if (!condition) {
-        printf("Assertion Failed.");
-    }
 }
 
 int main(int argc, char *argv[]) {
-
-    string s1 = (float3(1,2,3) * float3(1,2,3)).ToString();
-    string s2 = (float3(0,0,0) - float3(1,2,3)).ToString();
-
-    Sphere sphere;
-    Triangle triangle;
-    Mesh mesh;
-    Scene myscene;
-
-    float3u f = float3u(2);
-
-    cout << f.arr[0] << endl;
-
-    return 0;
 
     cout << "Running Raytracer!" << endl;
 
     // Sample usage for reading an XML scene file
     parser::p_scene scene;
 
-    cout << "First arg:" << endl;
-    cout << argv[0] << endl;
-
     cout << "Last arg:" << endl;
     cout << argv[argc - 1] << endl;
 
+    auto lastArg = argv[argc - 1];
+
     // TODO-Use the correct argument here for the final build!
-    scene.loadFromXml(argv[argc - 1]);
+    scene.loadFromXml(lastArg);
+
+    ConvertTemplateDataIntoSelfData(scene);
 
     cout << "This is after scene load!" << endl;
 
