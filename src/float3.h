@@ -15,6 +15,18 @@ namespace RayTracer {
         float y;
         float z;
 
+        float3() {
+            this->x = 0;
+            this->y = 0;
+            this->z = 0;
+        }
+
+        float3(float a) {
+            this->x = a;
+            this->y = a;
+            this->z = a;
+        }
+
         float3(float x, float y, float z) {
             this->x = x;
             this->y = y;
