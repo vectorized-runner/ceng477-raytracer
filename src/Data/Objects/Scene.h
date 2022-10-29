@@ -142,7 +142,7 @@ namespace RayTracer {
             return true;
         }
 
-        IntersectionResult IntersectRay(Ray ray) {
+        IntersectionResult IntersectRay(Ray ray) const {
             auto smallestIntersectionDistance = Math::FloatMax;
             auto hitObject = ObjectId(ObjectType::None, -1, -1);
 
@@ -188,25 +188,22 @@ namespace RayTracer {
                 }
             }
 
-            var triangles = TriangleData.Triangles;
-            for (var triIndex = 0; triIndex < triangles.Count; triIndex++) {
-                var triangle = triangles[triIndex];
-                if (RayTriangleIntersection(ray, triangle, out var
-                intersectionDistance))
+            for (auto triIndex = 0; triIndex < TriangleData.Count; triIndex++) {
+                auto& triangle = TriangleData.Triangles[triIndex];
+                // TODO: Does this work?
+                auto intersectionDistance = 0.0f;
+
+                if (RayTriangleIntersection(ray, triangle, intersectionDistance))
                 {
                     if (smallestIntersectionDistance > intersectionDistance) {
                         smallestIntersectionDistance = intersectionDistance;
-                        hitObject.Type = ObjectType.Triangle;
+                        hitObject.Type = ObjectType::TriangleObject;
                         hitObject.Index = triIndex;
                     }
                 }
             }
 
-            return new IntersectionResult
-                    {
-                            Distance = smallestIntersectionDistance,
-                            ObjectId = hitObject,
-                    };
+            return IntersectionResult(hitObject, smallestIntersectionDistance);
         }
     };
 
