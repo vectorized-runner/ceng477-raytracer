@@ -10,6 +10,7 @@ using namespace std;
 
 namespace RayTracer {
 
+
     struct float3 {
         float x;
         float y;
@@ -33,7 +34,7 @@ namespace RayTracer {
             this->z = z;
         }
 
-        float3 yzx() {
+        float3 yzx() const {
             return float3(y, z, x);
         }
 
