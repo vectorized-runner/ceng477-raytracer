@@ -4,23 +4,14 @@
 #include "../Math/float3.h"
 #include "../Data/Collision/AABB.h"
 #include "../Data/Objects/ObjectId.h"
+#include "../Data/Lights/PointLightData.h"
+#include "../Data/Lights/AmbientLightData.h"
+#include "../Data/Objects/Sphere.h"
 
 using namespace std;
 using namespace RayTracer;
 
 typedef unsigned char RGB[3];
-
-struct AmbientLightData
-{
-    float3 Radiance;
-};
-
-struct PointLightData
-{
-    float3 Position;
-    float Intensity;
-};
-
 
 
 void debug_assert(bool condition) {
@@ -35,16 +26,11 @@ int main(int argc, char *argv[]) {
     string s1 = (float3(1,2,3) * float3(1,2,3)).ToString();
     string s2 = (float3(0,0,0) - float3(1,2,3)).ToString();
 
-    AABB aabb;
+    Sphere sphere;
 
-    cout << aabb.Min.ToString() << endl;
-    cout << aabb.Max.ToString() << endl;
+    cout << sphere.Center.ToString() << endl;
+    cout << sphere.RadiusSquared << endl;
 
-    PointLightData pl;
-    AmbientLightData al;
-    ObjectId oj;
-
-    cout << s2 << endl;
 
     return 0;
 
