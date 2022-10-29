@@ -7,7 +7,7 @@
 #include "SphereData.h"
 #include "../Lights/PointLightData.h"
 #include "../Lights/AmbientLightData.h"
-#include "../Math/float3u.h"
+#include "../../Math/float3u.h"
 
 using namespace std;
 
