@@ -40,6 +40,10 @@ namespace RayTracer {
         static float3 max(float3 x, float3 y) {
             return float3(max(x.x, y.x), max(x.y, y.y), max(x.z, y.z));
         }
+
+        static float3 rcp(float3 x) {
+            return 1.0f / x;
+        }
     };
 
 } // RayTracer
