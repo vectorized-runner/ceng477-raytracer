@@ -11,6 +11,9 @@ namespace RayTracer {
         float3 Min;
         float3 Max;
 
+        AABB() : Min(), Max(){
+        }
+
         AABB(float3 min, float3 max) {
             Min = min;
             Max = max;
