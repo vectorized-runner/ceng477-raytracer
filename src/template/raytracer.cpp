@@ -17,7 +17,30 @@ using namespace RayTracer;
 
 typedef unsigned char RGB[3];
 
-void ConvertTemplateDataIntoSelfData(parser::p_scene& scene){
+Rgb BackgroundColor = Rgb(0);
+float ShadowRayEpsilon = 0.0f;
+int MaxBounces = 0;
+Scene scene;
+
+void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
+    auto sceneBg = parseScene.background_color;
+    BackgroundColor = Rgb(float3(sceneBg.x, sceneBg.y, sceneBg.z));
+
+    ShadowRayEpsilon = parseScene.shadow_ray_epsilon;
+
+    MaxBounces = parseScene.max_recursion_depth;
+
+    auto ambient = parseScene.ambient_light;
+    scene.AmbientLight.Radiance = float3(ambient.x, ambient.y, ambient.z);
+
+    auto pointLightCount = parseScene.point_lights.size();
+    scene.PointLights = new RayTracer::PointLightData[pointLightCount];
+    for (int i = 0; i < pointLightCount; ++i) {
+        auto intensity = parseScene.point_lights[i].intensity;
+        auto position = parseScene.point_lights[i].position;
+        scene.PointLights[i].Intensity = float3(intensity.x, intensity.y, intensity.z);
+        scene.PointLights[i].Position = float3(position.x, position.y, position.z);
+    }
 
 }
 
