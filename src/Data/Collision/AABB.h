@@ -11,8 +11,6 @@ namespace RayTracer {
         float3 Min;
         float3 Max;
 
-        AABB() = default;
-
         void Encapsulate(float3 point) {
             Min = Math::min(point, Min);
             Max = Math::max(point, Max);
