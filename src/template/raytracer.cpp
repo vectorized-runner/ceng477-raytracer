@@ -1,7 +1,7 @@
 #include <iostream>
 #include "parser.h"
 #include "ppm.h"
-#include "../float3.h"
+#include "../Math/float3.h"
 #include "../Data/Collision/AABB.h"
 #include "../Data/Objects/ObjectId.h"
 

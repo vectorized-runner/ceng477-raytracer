@@ -2,7 +2,7 @@
 #ifndef CENG477_RAYTRACER_CAMERADATA_H
 #define CENG477_RAYTRACER_CAMERADATA_H
 
-#include "../../float3.h"
+#include "../../Math/float3.h"
 
 namespace RayTracer {
 

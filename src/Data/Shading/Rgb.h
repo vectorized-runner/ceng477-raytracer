@@ -2,7 +2,7 @@
 #ifndef CENG477_RAYTRACER_RGB_H
 #define CENG477_RAYTRACER_RGB_H
 
-#include "../../float3.h"
+#include "../../Math/float3.h"
 #include <string>
 
 using namespace std;

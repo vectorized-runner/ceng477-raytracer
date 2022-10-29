@@ -2,7 +2,7 @@
 #ifndef CENG477_RAYTRACER_AABB_H
 #define CENG477_RAYTRACER_AABB_H
 
-#include "../../float3.h"
+#include "../../Math/float3.h"
 #include "../../Math/Math.h"
 
 namespace RayTracer {
