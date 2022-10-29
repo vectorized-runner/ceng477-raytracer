@@ -44,6 +44,22 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
 
 }
 
+void FreeResources(){
+    delete[] scene.PointLights;
+    delete[] scene.TriangleData.Triangles;
+    delete[] scene.TriangleData.Materials;
+    delete[] scene.TriangleData.Normals;
+    delete[] scene.SphereData.Materials;
+    delete[] scene.SphereData.Spheres;
+
+    for(int i = 0; i < scene.MeshData.Count; i++){
+        delete[] scene.MeshData.Meshes[i].Triangles;
+        delete[] scene.MeshData.Meshes[i].TriangleNormals;
+    }
+
+    delete[] scene.MeshData.Meshes;
+}
+
 int main(int argc, char *argv[]) {
 
     cout << "Running Raytracer!" << endl;
