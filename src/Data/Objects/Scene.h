@@ -156,8 +156,6 @@ namespace RayTracer {
                 if (RayAABBIntersection(ray, mesh.AABB)) {
                     for (auto triIndex = 0; triIndex < mesh.TriangleCount; triIndex++) {
                         auto& triangle = mesh.Triangles[triIndex];
-
-                        // TODO: Does this work?
                         auto intersectionDistance = 0.0f;
 
                         if (RayTriangleIntersection(ray, triangle, intersectionDistance))
@@ -175,7 +173,6 @@ namespace RayTracer {
 
             for (auto sphereIndex = 0; sphereIndex < SphereData.Count; sphereIndex++) {
                 auto sphere = SphereData.Spheres[sphereIndex];
-                // TODO: Does this work?
                 auto closestIntersectionDistance = 0.0f;
 
                 if (RaySphereIntersection(ray, sphere, closestIntersectionDistance))
@@ -190,7 +187,6 @@ namespace RayTracer {
 
             for (auto triIndex = 0; triIndex < TriangleData.Count; triIndex++) {
                 auto& triangle = TriangleData.Triangles[triIndex];
-                // TODO: Does this work?
                 auto intersectionDistance = 0.0f;
 
                 if (RayTriangleIntersection(ray, triangle, intersectionDistance))
