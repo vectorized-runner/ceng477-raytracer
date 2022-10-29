@@ -20,13 +20,7 @@ struct PointLightData
     float Intensity;
 };
 
-enum ObjectType
-{
-    None,
-    Sphere,
-    Triangle,
-    MeshTriangle,
-};
+
 
 void debug_assert(bool condition) {
     if (!condition) {
