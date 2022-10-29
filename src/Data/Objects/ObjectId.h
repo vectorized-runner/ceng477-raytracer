@@ -16,11 +16,11 @@ namespace RayTracer {
         int Index;
         int MeshIndex;
 
-        bool operator==(ObjectId other) {
+        bool operator==(ObjectId other) const {
             return Type == other.Type && Index == other.Index && MeshIndex == other.MeshIndex;
         }
 
-        bool operator!=(ObjectId other) {
+        bool operator!=(ObjectId other) const {
             // return Type != other.Type || Index != other.Index || MeshIndex != other.MeshIndex;
             return !(*this == other);
         }
