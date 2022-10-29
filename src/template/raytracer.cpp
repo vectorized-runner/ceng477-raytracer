@@ -30,16 +30,34 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
 
     MaxBounces = parseScene.max_recursion_depth;
 
-    auto ambient = parseScene.ambient_light;
-    scene.AmbientLight.Radiance = float3(ambient.x, ambient.y, ambient.z);
+    // TODO: Parse cameras here.
+
+    auto ambientLight = parseScene.ambient_light;
+    scene.AmbientLight.Radiance = float3(ambientLight.x, ambientLight.y, ambientLight.z);
 
     auto pointLightCount = parseScene.point_lights.size();
-    scene.PointLights = new RayTracer::PointLightData[pointLightCount];
+    scene.PointLights = new PointLightData[pointLightCount];
     for (int i = 0; i < pointLightCount; ++i) {
-        auto intensity = parseScene.point_lights[i].intensity;
-        auto position = parseScene.point_lights[i].position;
-        scene.PointLights[i].Intensity = float3(intensity.x, intensity.y, intensity.z);
-        scene.PointLights[i].Position = float3(position.x, position.y, position.z);
+        auto& parseLight = parseScene.point_lights[i];
+        auto& light = scene.PointLights[i];
+        auto intensity = parseLight.intensity;
+        auto position = parseLight.position;
+        light.Intensity = float3(intensity.x, intensity.y, intensity.z);
+        light.Position = float3(position.x, position.y, position.z);
+    }
+
+    auto materialCount = parseScene.materials.size();
+    auto materials = new MaterialData[materialCount];
+
+    for (int i = 0; i < materialCount; ++i) {
+        auto& parseMat = parseScene.materials[i];
+        auto& material = materials[i];
+        auto ambient = parseMat.ambient;
+        auto diffuse = parseMat.diffuse;
+
+        material.AmbientReflectance = float3(ambient.x, ambient.y, ambient.z);
+        material.DiffuseReflectance = float3(diffuse.x, diffuse.y, diffuse.z);
+        // TODO:
     }
 
 }
