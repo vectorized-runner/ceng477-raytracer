@@ -11,6 +11,11 @@ namespace RayTracer {
         float3 TopRight;
         float3 BottomRight;
         float3 BottomLeft;
+
+        ImageRect(float3 topLeft, float3 topRight, float3 bottomRight, float3 bottomLeft)
+                : TopLeft(topLeft), TopRight(topRight), BottomRight(bottomRight), BottomLeft(bottomLeft) {
+
+        }
     };
 
 } // RayTracer
