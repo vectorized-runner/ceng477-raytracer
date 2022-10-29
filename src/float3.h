@@ -53,6 +53,10 @@ namespace RayTracer {
             return float3(x * other, y * other, z * other);
         }
 
+        float3 operator/(float3 other) const {
+            return float3(x / other.x, y / other.y, z / other.z);
+        }
+
         float3 operator/(float other) const {
             return float3(x / other, y / other, z / other);
         }
