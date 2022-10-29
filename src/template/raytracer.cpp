@@ -3,6 +3,7 @@
 #include "ppm.h"
 #include "../float3.h"
 #include "../Data/Collision/AABB.h"
+#include "../Data/Objects/ObjectId.h"
 
 using namespace std;
 using namespace RayTracer;
@@ -35,6 +36,14 @@ int main(int argc, char *argv[]) {
     string s2 = (float3(0,0,0) - float3(1,2,3)).ToString();
 
     AABB aabb;
+
+    cout << aabb.Min.ToString() << endl;
+    cout << aabb.Max.ToString() << endl;
+
+    PointLightData pl;
+    AmbientLightData al;
+    ObjectId oj;
+
     cout << s2 << endl;
 
     return 0;
