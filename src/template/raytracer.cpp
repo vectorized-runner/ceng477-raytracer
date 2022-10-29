@@ -9,6 +9,7 @@
 #include "../Data/Objects/Sphere.h"
 #include "../Data/Objects/Mesh.h"
 #include "../Data/Objects/Scene.h"
+#include "../Math/float3u.h"
 
 using namespace std;
 using namespace RayTracer;
