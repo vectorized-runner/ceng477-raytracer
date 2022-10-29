@@ -24,7 +24,7 @@ namespace RayTracer {
         PointLightData* PointLights;
         AmbientLightData AmbientLight;
 
-        AABB selfAABB;
+        AABB SelfAABB;
 
         void CalculateAABB() {
             auto aabb = AABB();
@@ -46,7 +46,7 @@ namespace RayTracer {
                 aabb.Encapsulate(SphereData.Spheres[i].GetAABB());
             }
 
-            selfAABB = aabb;
+            SelfAABB = aabb;
         }
 
         // TODO-Port:
@@ -148,7 +148,7 @@ namespace RayTracer {
             auto hitObject = ObjectId(ObjectType::None, -1, -1);
 
             // If ray doesn't intersect with Scene AABB, there's no need to check any object
-            if (!RayAABBIntersection(ray, selfAABB)) {
+            if (!RayAABBIntersection(ray, SelfAABB)) {
                 return IntersectionResult(hitObject, smallestIntersectionDistance);
             }
 
