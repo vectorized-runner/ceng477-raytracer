@@ -3,10 +3,24 @@
 #define CENG477_RAYTRACER_MATH_H
 
 #include "../float3.h"
+#include <cmath>
 
 namespace RayTracer {
 
     struct Math {
+        // TODO: Unity is lhs, ensure this is correct
+        static float3 cross(float3 x, float3 y) {
+            return (x * y.yzx() - x.yzx() * y).yzx();
+        }
+
+        static float3 length(float3 v) {
+            return sqrt(dot(v, v));
+        }
+
+        static float dot(float3 x, float3 y) {
+            return x.x * y.x + x.y * y.y + x.z * y.z;
+        }
+
         static float min(float x, float y) {
             return x < y ? x : y;
         }
