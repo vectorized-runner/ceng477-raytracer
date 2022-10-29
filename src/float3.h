@@ -6,6 +6,8 @@
 
 using namespace std;
 
+// TODO: Move this to Math directory
+
 namespace RayTracer {
 
     struct float3 {
@@ -19,7 +21,11 @@ namespace RayTracer {
             this->z = z;
         }
 
-        string ToString() {
+        float3 operator+(float3 other) const {
+            return float3(x + other.x, y + other.y, z + other.z);
+        }
+
+        string ToString() const {
             return "(" + to_string(x) + ", " + to_string(y) + ", " + to_string(z) + ")";
         }
     };
