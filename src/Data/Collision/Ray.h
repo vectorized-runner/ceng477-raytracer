@@ -18,11 +18,11 @@ namespace RayTracer {
             Direction = direction;
         }
 
-        float3 GetPoint(float distance) {
+        float3 GetPoint(float distance) const {
             return Origin + Direction * distance;
         }
 
-        string ToString() {
+        string ToString() const {
             return "Origin: " + Origin.ToString() + ", Direction: " + Direction.ToString();
         }
     };

@@ -12,7 +12,7 @@ namespace RayTracer {
         int X;
         int Y;
 
-        string ToString() {
+        string ToString() const {
             return "(" + to_string(X) + ", " + to_string(Y) + ")";
         }
     };
