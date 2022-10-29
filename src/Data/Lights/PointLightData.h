@@ -8,7 +8,7 @@ namespace RayTracer {
 
     struct PointLightData {
         float3 Position;
-        float Intensity;
+        float3 Intensity;
     };
 
 } // RayTracer
