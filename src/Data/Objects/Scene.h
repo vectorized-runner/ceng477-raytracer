@@ -118,7 +118,7 @@ namespace RayTracer {
         // TODO-Optimize: Only need to return for 1 root, not 2 roots, not used.
         // TODO-Optimize: On 2 root case, if t0 is greater than zero, we don't have to check t1.
         static bool RaySphereIntersection(Ray ray, Sphere sphere, float &closestIntersectionDistance) {
-            Debug::Assert(Math::IsNormalized(ray.Direction));
+            Debug::Assert(Math::IsNormalized(ray.Direction), "Ray isn't normalized.");
 
             auto oc = ray.Origin - sphere.Center;
             auto uoc = Math::Dot(ray.Direction, oc);
