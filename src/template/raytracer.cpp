@@ -315,16 +315,11 @@ int main(int argc, char *argv[]) {
         auto *image = new unsigned char[pixelCount * 3];
 
         for (int j = 0; j < pixelCount; ++j) {
-
-            int i = 0;
-            for (int y = 0; y < height; ++y) {
-                for (int x = 0; x < width; ++x) {
-                    int colIdx = x / columnWidth;
-                    image[i++] = BAR_COLOR[colIdx][0];
-                    image[i++] = BAR_COLOR[colIdx][1];
-                    image[i++] = BAR_COLOR[colIdx][2];
-                }
-            }
+            const auto& color = colors[j];
+            // Write rgb, round to nearest
+            image[j++] = (unsigned char)round(color.Value.x);
+            image[j++] = (unsigned char)round(color.Value.y);
+            image[j++] = (unsigned char)round(color.Value.z);
         }
 
         cout << "Writing to RAM buffer completed" << endl;
