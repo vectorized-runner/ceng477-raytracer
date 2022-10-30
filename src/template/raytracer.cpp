@@ -213,6 +213,37 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     delete[] vertices;
 }
 
+Rgb Shade(Ray ray, float3 cameraPosition, int currentBounces){
+    return Rgb(0);
+}
+
+int GetPixelIndex(int px, int py, int resolutionX) {
+    return px + py * resolutionX;
+}
+
+void CastPixelRays(CameraData cameraData, ImagePlane imagePlane, Rgb* colors) {
+    auto resX = imagePlane.Resolution.X;
+    auto resY = imagePlane.Resolution.Y;
+    auto topLeft = imagePlane.GetRect(cameraData).TopLeft;
+    auto up = cameraData.Up;
+    auto right = cameraData.Right;
+    auto horizontalLength = imagePlane.HorizontalLength();
+    auto verticalLength = imagePlane.VerticalLength();
+    auto cameraPosition = cameraData.Position;
+
+    // Traverse order swapped for better cache usage
+    // arrayIndex = x + y * resX
+    for (int y = 0; y < resY; y++)
+        for (int x = 0; x < resX; x++) {
+            auto rightMove = (x + 0.5f) * horizontalLength / resX;
+            auto downMove = (y + 0.5f) * verticalLength / resY;
+            auto pixelPosition = topLeft + rightMove * right - up * downMove;
+            auto ray = Ray(cameraPosition, Math::Normalize(pixelPosition - cameraPosition));
+            auto index = GetPixelIndex(x, y, resX);
+            colors[index] = Shade(ray, cameraPosition, 0);
+        }
+}
+
 void LogSceneStats(){
     Debug::Log("CameraCount: " + to_string(CameraCount));
 }
