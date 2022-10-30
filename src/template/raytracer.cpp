@@ -273,6 +273,13 @@ Rgb CalculateSpecular(float3 lightDirection, float3 cameraDirection, float3 surf
     return Rgb(specularReflectance * pow(cosNormalAndHalfway, phongExponent) * receivedIrradiance);
 }
 
+float3 GetSphereNormal(float3 surfacePoint, int index)
+{
+    auto sphere = scene.SphereData.Spheres[index];
+    auto surfaceNormal = Math::Normalize(surfacePoint - sphere.Center);
+    return surfaceNormal;
+}
+
 void CastPixelRays(CameraData cameraData, ImagePlane imagePlane, Rgb* colors) {
     auto resX = imagePlane.Resolution.X;
     auto resY = imagePlane.Resolution.Y;
