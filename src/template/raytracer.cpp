@@ -280,6 +280,36 @@ float3 GetSphereNormal(float3 surfacePoint, int index)
     return surfaceNormal;
 }
 
+void GetSurfaceNormalAndMaterial(float3 surfacePoint, ObjectId id, float3& outNormal, MaterialData& outMaterial)
+{
+    switch (id.Type)
+    {
+        case ObjectType::SphereObject:
+        {
+            outNormal = GetSphereNormal(surfacePoint, id.Index);
+            outMaterial = scene.SphereData.Materials[id.Index];
+            return;
+        }
+        case ObjectType::TriangleObject:
+        {
+            outNormal = scene.TriangleData.Normals[id.Index];
+            outMaterial = scene.TriangleData.Materials[id.Index];
+            return;
+        }
+        case ObjectType::MeshTriangleObject:
+        {
+            outNormal = scene.MeshData.Meshes[id.MeshIndex].TriangleNormals[id.Index];
+            outMaterial = scene.MeshData.Meshes[id.MeshIndex].MaterialData;
+            return;
+        }
+        case ObjectType::None:
+        {
+            Debug::Log("Error: None reached.");
+            return;
+        }
+    }
+}
+
 void CastPixelRays(CameraData cameraData, ImagePlane imagePlane, Rgb* colors) {
     auto resX = imagePlane.Resolution.X;
     auto resY = imagePlane.Resolution.Y;
