@@ -12,8 +12,22 @@ namespace RayTracer {
         int TriangleCount;
         Triangle* Triangles;
         float3* TriangleNormals;
-        AABB AABB;
+        AABB SelfAABB;
         MaterialData MaterialData;
+
+        void CalculateAABB() {
+            auto aabb = AABB();
+            aabb.Min = Math::FloatMax;
+            aabb.Max = Math::FloatMin;
+
+            for (int i = 0; i < TriangleCount; ++i) {
+                aabb.Encapsulate(Triangles[i].Vertex0);
+                aabb.Encapsulate(Triangles[i].Vertex1);
+                aabb.Encapsulate(Triangles[i].Vertex2);
+            }
+
+            SelfAABB = aabb;
+        }
     };
 
 } // RayTracer
