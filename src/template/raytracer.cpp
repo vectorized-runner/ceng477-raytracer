@@ -36,10 +36,14 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     BackgroundColor = Rgb(float3(sceneBg.x, sceneBg.y, sceneBg.z));
 
     ShadowRayEpsilon = parseScene.shadow_ray_epsilon;
+    Debug::Assert(ShadowRayEpsilon > 0.0f, "ShadowRayEpsilon");
 
     MaxBounces = parseScene.max_recursion_depth;
+    Debug::Assert(MaxBounces > 0, "MaxBounces");
 
     CameraCount = parseScene.cameras.size();
+    Debug::Assert(CameraCount > 0, "CameraCount");
+
     cameras = new CameraData[CameraCount];
     imagePlanes = new ImagePlane[CameraCount];
     outputFileNames = new string[CameraCount];
@@ -74,6 +78,8 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     ambientLightData.Radiance = float3(ambientLight.x, ambientLight.y, ambientLight.z);
 
     auto pointLightCount = parseScene.point_lights.size();
+    Debug::Assert(pointLightCount > 0, "PointLightCount");
+
     auto pointLights = new PointLightData[pointLightCount];
     for (int i = 0; i < pointLightCount; ++i) {
         const auto& parseLight = parseScene.point_lights[i];
@@ -85,6 +91,8 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     }
 
     auto materialCount = parseScene.materials.size();
+    Debug::Assert(materialCount > 0, "MaterialCount");
+
     auto materials = new MaterialData[materialCount];
 
     for (int i = 0; i < materialCount; ++i) {
@@ -106,6 +114,8 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     }
 
     auto vertexCount = parseScene.vertex_data.size();
+    Debug::Assert(vertexCount > 0, "VertexCount");
+
     auto vertices = new float3[vertexCount];
     for (int i = 0; i < vertexCount; ++i) {
         const auto& parseVertex = parseScene.vertex_data[i];
@@ -114,6 +124,8 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
 
     // If the ID is 1, it corresponds to 0th index, so decrement by one
     auto sphereCount = parseScene.spheres.size();
+    Debug::Assert(sphereCount > 0, "SphereCount");
+
     auto spheres = new Sphere[sphereCount];
     auto sphereMaterials = new MaterialData[sphereCount];
 
@@ -126,6 +138,8 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     }
 
     auto triangleCount = parseScene.triangles.size();
+    Debug::Assert(triangleCount > 0, "TriangleCount");
+
     auto triangles = new Triangle[triangleCount];
     auto triangleMaterials = new MaterialData[triangleCount];
     auto triangleNormals = new float3[triangleCount];
@@ -142,6 +156,8 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     }
 
     auto meshCount = parseScene.meshes.size();
+    Debug::Assert(meshCount > 0, "MeshCount");
+
     auto meshes = new Mesh[meshCount];
     for (int i = 0; i < meshCount; ++i) {
         const auto& parseMesh = parseScene.meshes[i];
