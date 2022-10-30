@@ -325,18 +325,18 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
     auto cameraDirection = Math::Normalize(cameraPosition - surfacePoint);
 
     for (int i = 0; i < scene.PointLights.Count; ++i) {
-        auto pointLight = scene.PointLights.PointLights[i];
-        auto lightPosition = pointLight.Position;
-        auto lightDirection = Math::Normalize(lightPosition - surfacePoint);
-        auto shadowRayOrigin = surfacePoint + surfaceNormal * ShadowRayEpsilon;
-        auto shadowRay = Ray(shadowRayOrigin, lightDirection);
-        auto shadowRayHitResult = scene.IntersectRay(shadowRay);
-        auto lightDistanceSq = Math::DistanceSq(surfacePoint, lightPosition);
+        const auto pointLight = scene.PointLights.PointLights[i];
+        const auto lightPosition = pointLight.Position;
+        const auto lightDirection = Math::Normalize(lightPosition - surfacePoint);
+        const auto shadowRayOrigin = surfacePoint + surfaceNormal * ShadowRayEpsilon;
+        const auto shadowRay = Ray(shadowRayOrigin, lightDirection);
+        const auto shadowRayHitResult = scene.IntersectRay(shadowRay);
+        const auto lightDistanceSq = Math::DistanceSq(surfacePoint, lightPosition);
 
         if(debug_shadow){
             // TODO-Optimize: We can remove this branch, if ray-scene intersection returns infinite distance by default
             if (shadowRayHitResult.ObjectId.Type != ObjectType::None) {
-                auto hitDistanceSq = shadowRayHitResult.Distance * shadowRayHitResult.Distance;
+                const auto hitDistanceSq = shadowRayHitResult.Distance * shadowRayHitResult.Distance;
                 if (hitDistanceSq < lightDistanceSq) {
                     // Shadow ray intersects with an object before light, no contribution from this light
                     continue;
@@ -347,16 +347,16 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
             Debug::Assert(shadowRayHitResult.ObjectId != pixelRayHitObject, "ShadowRayHitSameObject");
         }
 
-        auto receivedIrradiance = pointLight.Intensity / lightDistanceSq;
+        const auto receivedIrradiance = pointLight.Intensity / lightDistanceSq;
 
         if(debug_diffuse){
-            auto diffuseRgb = CalculateDiffuse(receivedIrradiance, material.DiffuseReflectance, surfaceNormal,lightDirection);
+            const auto diffuseRgb = CalculateDiffuse(receivedIrradiance, material.DiffuseReflectance, surfaceNormal,lightDirection);
             Debug::Assert(Math::IsNonNegative(diffuseRgb.Value), "DiffuseRgb");
             color = color + diffuseRgb;
         }
 
         if(debug_specular){
-            auto specularRgb = CalculateSpecular(lightDirection, cameraDirection, surfaceNormal, material.SpecularReflectance, receivedIrradiance, material.PhongExponent);
+            const auto specularRgb = CalculateSpecular(lightDirection, cameraDirection, surfaceNormal, material.SpecularReflectance, receivedIrradiance, material.PhongExponent);
             Debug::Assert(Math::IsNonNegative(specularRgb.Value), "SpecularRgb");
             color = color + specularRgb;
         }
