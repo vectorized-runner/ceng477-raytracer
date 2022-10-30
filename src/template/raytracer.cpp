@@ -55,8 +55,8 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
         auto& plane = imagePlanes[i];
         camera.Position = float3(parseCam.position.x, parseCam.position.y, parseCam.position.z);
         camera.Up = float3(parseCam.up.x, parseCam.up.y, parseCam.up.z);
-        camera.Forward = -float3(parseCam.gaze.x, parseCam.gaze.y, parseCam.gaze.z);
-        camera.Right = Math::Cross(camera.Up, camera.Forward);
+        camera.Forward = float3(parseCam.gaze.x, parseCam.gaze.y, parseCam.gaze.z);
+        camera.Right = Math::Cross(camera.Up, -camera.Forward);
 
         plane.Resolution = Resolution(parseCam.image_width, parseCam.image_height);
         plane.DistanceToCamera = parseCam.near_distance;
