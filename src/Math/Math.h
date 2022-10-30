@@ -84,6 +84,11 @@ namespace RayTracer {
             return x.x >= 0 && x.y >= 0 && x.z >= 0;
         }
 
+        static float Clamp(float x, float a, float b) {
+            return Max(a, Min(b, x));
+        }
+
+
 
     };
 
