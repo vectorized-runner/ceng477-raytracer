@@ -227,6 +227,11 @@ int GetPixelIndex(int px, int py, int resolutionX) {
     return px + py * resolutionX;
 }
 
+Rgb CalculateAmbient(float3 ambientReflectance, float3 ambientRadiance)
+{
+    return Rgb(ambientRadiance * ambientReflectance);
+}
+
 void CastPixelRays(CameraData cameraData, ImagePlane imagePlane, Rgb* colors) {
     auto resX = imagePlane.Resolution.X;
     auto resY = imagePlane.Resolution.Y;
