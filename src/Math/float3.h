@@ -6,7 +6,6 @@
 
 using namespace std;
 
-// TODO: Move this to Math directory
 
 namespace RayTracer {
 
@@ -62,7 +61,7 @@ namespace RayTracer {
             return float3(x / other, y / other, z / other);
         }
 
-        float3 operator-() const{
+        float3 operator-() const {
             return float3(-x, -y, -z);
         }
 
