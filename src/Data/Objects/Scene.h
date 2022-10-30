@@ -5,7 +5,7 @@
 #include "TriangleData.h"
 #include "MeshData.h"
 #include "SphereData.h"
-#include "../Lights/PointLight.h"
+#include "../Lights/PointLightData.h"
 #include "../Lights/AmbientLight.h"
 #include "../../Math/float3u.h"
 #include "../../Debug/Debug.h"
@@ -19,9 +19,7 @@ namespace RayTracer {
         TriangleData TriangleData;
         MeshData MeshData;
         SphereData SphereData;
-
-        int PointLightCount;
-        PointLight* PointLights;
+        PointLightData PointLights;
         AmbientLight AmbientLight;
 
         AABB SelfAABB;

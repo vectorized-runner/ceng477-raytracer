@@ -202,8 +202,8 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     scene.MeshData = meshData;
     scene.TriangleData = triangleData;
 
-    scene.PointLightCount = pointLightCount;
-    scene.PointLights = pointLights;
+    scene.PointLights.Count = pointLightCount;
+    scene.PointLights.PointLights = pointLights;
 
     scene.AmbientLight = ambientLightData;
 
@@ -218,7 +218,7 @@ void LogSceneStats(){
 }
 
 void FreeResources(){
-    delete[] scene.PointLights;
+    delete[] scene.PointLights.PointLights;
     delete[] scene.TriangleData.Triangles;
     delete[] scene.TriangleData.Materials;
     delete[] scene.TriangleData.Normals;
