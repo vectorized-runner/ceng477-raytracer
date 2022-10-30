@@ -295,6 +295,12 @@ Rgb CalculateAmbient(float3 ambientReflectance, float3 ambientRadiance) {
     return Rgb(ambientRadiance * ambientReflectance);
 }
 
+bool debug_diffuse = true;
+bool debug_specular = false;
+bool debug_mirror = false;
+bool debug_shadow = false;
+bool debug_ambient = false;
+
 Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
     Debug::Assert(Math::IsNormalized(pixelRay.Direction), "PixelRayNormalize");
 
@@ -309,7 +315,12 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
     float3 surfaceNormal;
     MaterialData material;
     GetSurfaceNormalAndMaterial(surfacePoint, pixelRayHitObject, surfaceNormal, material);
-    auto color = CalculateAmbient(material.AmbientReflectance, scene.AmbientLight.Radiance);
+    auto color = Rgb(0);
+
+    if(debug_ambient){
+        color = color + CalculateAmbient(material.AmbientReflectance, scene.AmbientLight.Radiance);
+    }
+
     auto cameraDirection = Math::Normalize(cameraPosition - surfacePoint);
 
     for (int i = 0; i < scene.PointLights.Count; ++i) {
@@ -321,33 +332,41 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
         auto shadowRayHitResult = scene.IntersectRay(shadowRay);
         auto lightDistanceSq = Math::DistanceSq(surfacePoint, lightPosition);
 
-        // TODO-Optimize: We can remove this branch, if ray-scene intersection returns infinite distance by default
-        if (shadowRayHitResult.ObjectId.Type != ObjectType::None) {
-            auto hitDistanceSq = shadowRayHitResult.Distance * shadowRayHitResult.Distance;
-            if (hitDistanceSq < lightDistanceSq) {
-                // Shadow ray intersects with an object before light, no contribution from this light
-                continue;
+        if(debug_shadow){
+            // TODO-Optimize: We can remove this branch, if ray-scene intersection returns infinite distance by default
+            if (shadowRayHitResult.ObjectId.Type != ObjectType::None) {
+                auto hitDistanceSq = shadowRayHitResult.Distance * shadowRayHitResult.Distance;
+                if (hitDistanceSq < lightDistanceSq) {
+                    // Shadow ray intersects with an object before light, no contribution from this light
+                    continue;
+                }
             }
+
+            // Shadow ray hit this object again, shouldn't happen
+            Debug::Assert(shadowRayHitResult.ObjectId != pixelRayHitObject, "ShadowRayHitSameObject");
         }
 
-        // Shadow ray hit this object again, shouldn't happen
-        Debug::Assert(shadowRayHitResult.ObjectId != pixelRayHitObject, "ShadowRayHitSameObject");
-
         auto receivedIrradiance = pointLight.Intensity / lightDistanceSq;
-        auto diffuseRgb = CalculateDiffuse(receivedIrradiance, material.DiffuseReflectance, surfaceNormal,
-                                           lightDirection);
-        auto specularRgb = CalculateSpecular(lightDirection, cameraDirection, surfaceNormal,
-                                             material.SpecularReflectance, receivedIrradiance, material.PhongExponent);
 
-        Debug::Assert(Math::IsNonNegative(specularRgb.Value), "SpecularRgb");
-        Debug::Assert(Math::IsNonNegative(diffuseRgb.Value), "DiffuseRgb");
-        color = color + diffuseRgb + specularRgb;
+        if(debug_diffuse){
+            auto diffuseRgb = CalculateDiffuse(receivedIrradiance, material.DiffuseReflectance, surfaceNormal,lightDirection);
+            Debug::Assert(Math::IsNonNegative(diffuseRgb.Value), "DiffuseRgb");
+            color = color + diffuseRgb;
+        }
+
+        if(debug_specular){
+            auto specularRgb = CalculateSpecular(lightDirection, cameraDirection, surfaceNormal, material.SpecularReflectance, receivedIrradiance, material.PhongExponent);
+            Debug::Assert(Math::IsNonNegative(specularRgb.Value), "SpecularRgb");
+            color = color + specularRgb;
+        }
     }
 
-    if (material.IsMirror && currentRayBounce < MaxBounces) {
-        auto reflectRay = Reflect(surfacePoint, surfaceNormal, cameraDirection);
-        auto mirrorReflectance = material.MirrorReflectance;
-        color = color + Rgb(mirrorReflectance * Shade(reflectRay, cameraPosition, currentRayBounce + 1).Value);
+    if(debug_mirror){
+        if (material.IsMirror && currentRayBounce < MaxBounces) {
+            auto reflectRay = Reflect(surfacePoint, surfaceNormal, cameraDirection);
+            auto mirrorReflectance = material.MirrorReflectance;
+            color = color + Rgb(mirrorReflectance * Shade(reflectRay, cameraPosition, currentRayBounce + 1).Value);
+        }
     }
 
     return color;
@@ -445,13 +464,13 @@ int main(int argc, char* argv[]) {
 
         auto* image = new unsigned char[pixelCount * 3];
 
-        // See if we've got non-zero color values
-        for (int j = 0; j < pixelCount; ++j) {
-            const auto& color = colors[j].Value;
-            if(color.x != 0.0f || color.y != 0.0f || color.z != 0.0f){
-                Debug::Log("Non-zero Color value " + color.ToString());
-            }
-        }
+//        // See if we've got non-zero color values
+//        for (int j = 0; j < pixelCount; ++j) {
+//            const auto& color = colors[j].Value;
+//            if(color.x != 0.0f || color.y != 0.0f || color.z != 0.0f){
+//                Debug::Log("Non-zero Color value " + color.ToString());
+//            }
+//        }
 
         for (int j = 0; j < pixelCount; ++j) {
             const auto& color = colors[j];
