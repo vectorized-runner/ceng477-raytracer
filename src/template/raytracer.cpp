@@ -196,6 +196,10 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     delete[] vertices;
 }
 
+void LogSceneStats(){
+    Debug::Log("CameraCount: " + to_string(CameraCount));
+}
+
 void FreeResources(){
     delete[] scene.PointLights;
     delete[] scene.TriangleData.Triangles;
@@ -233,6 +237,7 @@ int main(int argc, char *argv[]) {
     cout << "Loading XML Scene completed." << endl;
 
     ConvertTemplateDataIntoSelfData(scene);
+    LogSceneStats();
 
     cout << "Convert Template Data into Scene Data completed.";
 
