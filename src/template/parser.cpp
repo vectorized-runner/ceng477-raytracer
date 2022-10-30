@@ -112,7 +112,7 @@ void parser::p_scene::loadFromXml(const std::string &filepath)
 
     //Get Materials
     element = root->FirstChildElement("Materials");
-    element = element->FirstChildElement("p_material");
+    element = element->FirstChildElement("Material");
     p_material material;
     while (element)
     {
@@ -136,7 +136,7 @@ void parser::p_scene::loadFromXml(const std::string &filepath)
         stream >> material.phong_exponent;
 
         materials.push_back(material);
-        element = element->NextSiblingElement("p_material");
+        element = element->NextSiblingElement("Material");
     }
 
     //Get VertexData
@@ -152,11 +152,11 @@ void parser::p_scene::loadFromXml(const std::string &filepath)
 
     //Get Meshes
     element = root->FirstChildElement("Objects");
-    element = element->FirstChildElement("p_mesh");
+    element = element->FirstChildElement("Mesh");
     p_mesh mesh;
     while (element)
     {
-        child = element->FirstChildElement("p_material");
+        child = element->FirstChildElement("Material");
         stream << child->GetText() << std::endl;
         stream >> mesh.material_id;
 
@@ -172,17 +172,17 @@ void parser::p_scene::loadFromXml(const std::string &filepath)
 
         meshes.push_back(mesh);
         mesh.faces.clear();
-        element = element->NextSiblingElement("p_mesh");
+        element = element->NextSiblingElement("Mesh");
     }
     stream.clear();
 
     //Get Triangles
     element = root->FirstChildElement("Objects");
-    element = element->FirstChildElement("p_triangle");
+    element = element->FirstChildElement("Triangle");
     p_triangle triangle;
     while (element)
     {
-        child = element->FirstChildElement("p_material");
+        child = element->FirstChildElement("Material");
         stream << child->GetText() << std::endl;
         stream >> triangle.material_id;
 
@@ -191,16 +191,16 @@ void parser::p_scene::loadFromXml(const std::string &filepath)
         stream >> triangle.indices.v0_id >> triangle.indices.v1_id >> triangle.indices.v2_id;
 
         triangles.push_back(triangle);
-        element = element->NextSiblingElement("p_triangle");
+        element = element->NextSiblingElement("Triangle");
     }
 
     //Get Spheres
     element = root->FirstChildElement("Objects");
-    element = element->FirstChildElement("p_sphere");
+    element = element->FirstChildElement("Sphere");
     p_sphere sphere;
     while (element)
     {
-        child = element->FirstChildElement("p_material");
+        child = element->FirstChildElement("Material");
         stream << child->GetText() << std::endl;
         stream >> sphere.material_id;
 
@@ -213,6 +213,6 @@ void parser::p_scene::loadFromXml(const std::string &filepath)
         stream >> sphere.radius;
 
         spheres.push_back(sphere);
-        element = element->NextSiblingElement("p_sphere");
+        element = element->NextSiblingElement("Sphere");
     }
 }
