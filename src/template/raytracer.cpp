@@ -30,9 +30,6 @@ ImagePlane* imagePlanes;
 Rgb** outputColors;
 string* outputFileNames;
 
-// TODO: Normal correctness
-// TODO: Cross product correctness
-
 void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
     auto sceneBg = parseScene.background_color;
     BackgroundColor = Rgb(float3(sceneBg.x, sceneBg.y, sceneBg.z));
@@ -394,29 +391,6 @@ void LogSceneStats() {
     Debug::Log("TriangleCount: ", scene.TriangleData.Count);
     Debug::Log("MeshCount: ", scene.MeshData.Count);
     Debug::Log("PointLightCount: ", scene.PointLights.Count);
-}
-
-
-
-void FreeResources() {
-    // TODO: Delete rgb
-
-    delete[] scene.PointLights.PointLights;
-    delete[] scene.TriangleData.Triangles;
-    delete[] scene.TriangleData.Materials;
-    delete[] scene.TriangleData.Normals;
-    delete[] scene.SphereData.Materials;
-    delete[] scene.SphereData.Spheres;
-
-    for (int i = 0; i < scene.MeshData.Count; i++) {
-        delete[] scene.MeshData.Meshes[i].Triangles;
-        delete[] scene.MeshData.Meshes[i].TriangleNormals;
-    }
-
-    delete[] scene.MeshData.Meshes;
-
-    delete[] cameras;
-    delete[] imagePlanes;
 }
 
 int main(int argc, char* argv[]) {
