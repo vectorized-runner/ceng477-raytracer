@@ -299,7 +299,6 @@ const bool debug_diffuse = true;
 const bool debug_specular = true;
 const bool debug_mirror = true;
 const bool debug_shadow = true;
-const bool debug_ambient = true;
 
 Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
     Debug::Assert(Math::IsNormalized(pixelRay.Direction), "PixelRayNormalize");
@@ -316,14 +315,8 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
     float3 surfaceNormal;
     MaterialData material;
     GetSurfaceNormalAndMaterial(surfacePoint, pixelRayHitObject, surfaceNormal, material);
-    auto color = Rgb(0);
 
-    if(debug_ambient){
-        auto ambient = CalculateAmbient(material.AmbientReflectance, scene.AmbientLight.Radiance);
-        Debug::Assert(Math::IsNonNegative(ambient.Value), "Ambient");
-        color = color + ambient;
-    }
-
+    auto color = CalculateAmbient(material.AmbientReflectance, scene.AmbientLight.Radiance);
     auto cameraDirection = Math::Normalize(cameraPosition - surfacePoint);
 
     for (int i = 0; i < scene.PointLights.Count; ++i) {
