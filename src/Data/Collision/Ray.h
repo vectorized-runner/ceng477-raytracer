@@ -13,15 +13,18 @@ namespace RayTracer {
         float3 Origin;
         float3 Direction;
 
+        __attribute__((always_inline))
         Ray(float3 origin, float3 direction) {
             Origin = origin;
             Direction = direction;
         }
 
+        __attribute__((always_inline))
         float3 GetPoint(float distance) const {
             return Origin + Direction * distance;
         }
 
+        __attribute__((always_inline))
         string ToString() const {
             return "Origin: " + Origin.ToString() + ", Direction: " + Direction.ToString();
         }
