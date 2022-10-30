@@ -4,8 +4,8 @@
 #include "../Math/float3.h"
 #include "../Data/Collision/AABB.h"
 #include "../Data/Objects/ObjectId.h"
-#include "../Data/Lights/PointLightData.h"
-#include "../Data/Lights/AmbientLightData.h"
+#include "../Data/Lights/PointLight.h"
+#include "../Data/Lights/AmbientLight.h"
 #include "../Data/Objects/Sphere.h"
 #include "../Data/Objects/Mesh.h"
 #include "../Data/Objects/Scene.h"
@@ -74,13 +74,13 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     }
 
     auto ambientLight = parseScene.ambient_light;
-    AmbientLightData ambientLightData;
+    AmbientLight ambientLightData;
     ambientLightData.Radiance = float3(ambientLight.x, ambientLight.y, ambientLight.z);
 
     auto pointLightCount = parseScene.point_lights.size();
     Debug::Assert(pointLightCount > 0, "PointLightCount");
 
-    auto pointLights = new PointLightData[pointLightCount];
+    auto pointLights = new PointLight[pointLightCount];
     for (int i = 0; i < pointLightCount; ++i) {
         const auto& parseLight = parseScene.point_lights[i];
         auto& light = pointLights[i];

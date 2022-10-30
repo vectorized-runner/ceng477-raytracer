@@ -5,8 +5,8 @@
 #include "TriangleData.h"
 #include "MeshData.h"
 #include "SphereData.h"
-#include "../Lights/PointLightData.h"
-#include "../Lights/AmbientLightData.h"
+#include "../Lights/PointLight.h"
+#include "../Lights/AmbientLight.h"
 #include "../../Math/float3u.h"
 #include "../../Debug/Debug.h"
 #include "../Collision/IntersectionResult.h"
@@ -21,8 +21,8 @@ namespace RayTracer {
         SphereData SphereData;
 
         int PointLightCount;
-        PointLightData* PointLights;
-        AmbientLightData AmbientLight;
+        PointLight* PointLights;
+        AmbientLight AmbientLight;
 
         AABB SelfAABB;
 
