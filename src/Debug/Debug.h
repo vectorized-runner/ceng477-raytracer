@@ -9,9 +9,9 @@ using namespace std;
 namespace RayTracer {
 
     struct Debug {
-        static void Assert(bool condition) {
+        static void Assert(bool condition, string message) {
             if (!condition) {
-                cout << "Assertion Failed." << endl;
+                cout << "Assertion Failed: " << message << endl;
             }
         }
     };
