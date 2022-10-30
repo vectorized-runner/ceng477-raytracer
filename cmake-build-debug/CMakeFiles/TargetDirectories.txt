@@ -1,3 +1,0 @@
-/Users/bartubas/CLionProjects/ceng477-raytracer/cmake-build-debug/CMakeFiles/ceng477_raytracer.dir
-/Users/bartubas/CLionProjects/ceng477-raytracer/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/bartubas/CLionProjects/ceng477-raytracer/cmake-build-debug/CMakeFiles/rebuild_cache.dir
