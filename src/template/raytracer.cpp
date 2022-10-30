@@ -129,17 +129,17 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
 
     // If the ID is 1, it corresponds to 0th index, so decrement by one
     auto sphereCount = parseScene.spheres.size();
-    Debug::Assert(sphereCount > 0, "SphereCount");
+    if(sphereCount > 0){
+        auto spheres = new Sphere[sphereCount];
+        auto sphereMaterials = new MaterialData[sphereCount];
 
-    auto spheres = new Sphere[sphereCount];
-    auto sphereMaterials = new MaterialData[sphereCount];
-
-    for (int i = 0; i < sphereCount; ++i) {
-        const auto& parseSphere = parseScene.spheres[i];
-        auto& sphere = spheres[i];
-        sphere.RadiusSquared = parseSphere.radius * parseSphere.radius;
-        sphere.Center = vertices[parseSphere.center_vertex_id - 1];
-        sphereMaterials[i] = materials[parseSphere.material_id - 1];
+        for (int i = 0; i < sphereCount; ++i) {
+            const auto& parseSphere = parseScene.spheres[i];
+            auto& sphere = spheres[i];
+            sphere.RadiusSquared = parseSphere.radius * parseSphere.radius;
+            sphere.Center = vertices[parseSphere.center_vertex_id - 1];
+            sphereMaterials[i] = materials[parseSphere.material_id - 1];
+        }
     }
 
     auto triangleCount = parseScene.triangles.size();
