@@ -11,10 +11,12 @@ namespace RayTracer {
         float3 xyz;
         float arr[3];
 
+        __attribute__((always_inline))
         float3u() {
             xyz = float3(0, 0, 0);
         }
 
+        __attribute__((always_inline))
         float3u(float3 v) {
             xyz = v;
         }

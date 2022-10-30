@@ -13,6 +13,7 @@ using namespace std;
 namespace RayTracer {
 
     struct Debug {
+        __attribute__((always_inline))
         static void Assert(bool condition, const string& message) {
 #ifdef Self_Debug
             if (!condition) {
@@ -21,24 +22,28 @@ namespace RayTracer {
 #endif
         }
 
+        __attribute__((always_inline))
         static void Log(const string& message) {
 #ifdef Self_Debug
             cout << message << endl;
 #endif
         }
 
+        __attribute__((always_inline))
         static void Log(const string& message, int i) {
 #ifdef Self_Debug
             cout << message << i << endl;
 #endif
         }
 
+        __attribute__((always_inline))
         static void Log(const string& message, float f) {
 #ifdef Self_Debug
             cout << message << f << endl;
 #endif
         }
 
+        __attribute__((always_inline))
         static void Log(const string& message, char* c) {
 #ifdef Self_Debug
             cout << message << c << endl;
