@@ -12,6 +12,7 @@
 #include "../Data/Shading/Rgb.h"
 #include "../Data/Camera/CameraData.h"
 #include "../Data/Camera/ImagePlane.h"
+#include <chrono>
 
 using namespace std;
 using namespace RayTracer;
@@ -415,6 +416,7 @@ void FreeResources() {
 }
 
 int main(int argc, char* argv[]) {
+    auto begin = chrono::steady_clock::now();
 
     cout << "Started Running." << endl;
 
@@ -470,6 +472,10 @@ int main(int argc, char* argv[]) {
     cout << "Freeing Resources Completed." << endl;
 
     cout << "Existing the Program." << endl;
+
+    auto end = chrono::steady_clock::now();
+
+    cout << "Milliseconds: " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << endl;
 
     return 0;
 }
