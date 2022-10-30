@@ -218,6 +218,50 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     delete[] vertices;
 }
 
+
+Rgb CalculateDiffuse(float3 receivedIrradiance, float3 diffuseReflectance, float3 surfaceNormal,float3 lightDirection)
+{
+    // Debug::Assert(receivedIrradiance >= 0.0f, "Irradiance");
+    Debug::Assert(Math::IsNormalized(surfaceNormal), "SurfaceNormal");
+    Debug::Assert(Math::IsNormalized(lightDirection), "LightDirection");
+
+    auto cosNormalAndLightDir = Math::Max(0, Math::Dot(lightDirection, surfaceNormal));
+    return Rgb(diffuseReflectance * cosNormalAndLightDir * receivedIrradiance);
+}
+
+Ray Reflect(float3 surfacePoint, float3 surfaceNormal, float3 cameraDirection)
+{
+    auto newRayOrigin = surfacePoint + surfaceNormal * ShadowRayEpsilon;
+    auto newRayNormal = 2 * surfaceNormal * Math::Dot(cameraDirection, surfaceNormal) - cameraDirection;
+    return Ray(newRayOrigin, newRayNormal);
+}
+
+Rgb CalculateSpecular(float3 lightDirection, float3 cameraDirection, float3 surfaceNormal,
+                      float3 specularReflectance, float receivedIrradiance, float phongExponent) {
+    Debug::Assert(Math::IsNormalized(lightDirection), "LightDir");
+    Debug::Assert(Math::IsNormalized(cameraDirection), "CameraDir");
+    Debug::Assert(Math::IsNormalized(surfaceNormal), "SurfaceNormal");
+
+    auto lightDotNormal = Math::Dot(lightDirection, surfaceNormal);
+    // Angle works like this since both vectors are normalized
+    auto angle = Math::Degrees(Math::Acos(lightDotNormal));
+    // If this assertion fails, take the absolute of angle
+    Debug::Assert(angle > 0.0f, "SpecularAngle");
+
+    // Light is coming from behind the surface
+    if (angle > 90.0f) {
+        return Rgb(0);
+    }
+
+    auto v = lightDirection + cameraDirection;
+    auto halfwayVector = v / Math::Length(v);
+    Debug::Assert(Math::IsNormalized(halfwayVector), "Halfway");
+
+    auto cosNormalAndHalfway = Math::Max(0, Math::Dot(surfaceNormal, halfwayVector));
+    return Rgb(specularReflectance * pow(cosNormalAndHalfway, phongExponent) * receivedIrradiance);
+}
+
+
 float3 GetSphereNormal(float3 surfacePoint, int index)
 {
     auto sphere = scene.SphereData.Spheres[index];
@@ -274,22 +318,22 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentBounces){
     float3 surfaceNormal;
     MaterialData material;
     GetSurfaceNormalAndMaterial(surfacePoint, pixelRayHitObject, surfaceNormal, material);
-    var color = CalculateAmbient(material.AmbientReflectance, scene.AmbientLight.Radiance);
-    var cameraDirection = normalize(cameraPosition - surfacePoint);
+    auto color = CalculateAmbient(material.AmbientReflectance, scene.AmbientLight.Radiance);
+    auto cameraDirection = Math::Normalize(cameraPosition - surfacePoint);
 
-    foreach (var pointLight in Scene.PointLights)
-    {
-        var lightPosition = pointLight.Position;
-        var lightDirection = normalize(lightPosition - surfacePoint);
-        var shadowRayOrigin = surfacePoint + surfaceNormal * ShadowRayEpsilon;
-        var shadowRay = new Ray(shadowRayOrigin, lightDirection);
-        var shadowRayHitResult = Scene.IntersectRay(shadowRay);
-        var lightDistanceSq = distancesq(surfacePoint, lightPosition);
+    for (int i = 0; i < scene.PointLights.Count; ++i) {
+        auto pointLight = scene.PointLights.PointLights[i];
+        auto lightPosition = pointLight.Position;
+        auto lightDirection = Math::Normalize(lightPosition - surfacePoint);
+        auto shadowRayOrigin = surfacePoint + surfaceNormal * ShadowRayEpsilon;
+        auto shadowRay = Ray(shadowRayOrigin, lightDirection);
+        auto shadowRayHitResult = scene.IntersectRay(shadowRay);
+        auto lightDistanceSq = Math::DistanceSq(surfacePoint, lightPosition);
 
         // TODO-Optimize: We can remove this branch, if ray-scene intersection returns infinite distance by default
-        if (shadowRayHitResult.ObjectId.Type != ObjectType.None)
+        if (shadowRayHitResult.ObjectId.Type != ObjectType::None)
         {
-            var hitDistanceSq = shadowRayHitResult.Distance * shadowRayHitResult.Distance;
+            auto hitDistanceSq = shadowRayHitResult.Distance * shadowRayHitResult.Distance;
             if (hitDistanceSq < lightDistanceSq)
             {
                 // Shadow ray intersects with an object before light, no contribution from this light
@@ -298,11 +342,11 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentBounces){
         }
 
         // Shadow ray hit this object again, shouldn't happen
-        Debug.Assert(shadowRayHitResult.ObjectId != pixelRayHitObject);
+        Debug::Assert(shadowRayHitResult.ObjectId != pixelRayHitObject);
 
-        var receivedIrradiance = pointLight.Intensity / lightDistanceSq;
-        var diffuseRgb = CalculateDiffuse(receivedIrradiance, material.DiffuseReflectance, surfaceNormal, lightDirection);
-        var specularRgb = CalculateSpecular(lightDirection, cameraDirection, surfaceNormal, material.SpecularReflectance, receivedIrradiance, material.PhongExponent);
+        auto receivedIrradiance = pointLight.Intensity / lightDistanceSq;
+        auto diffuseRgb = CalculateDiffuse(receivedIrradiance, material.DiffuseReflectance, surfaceNormal, lightDirection);
+        auto specularRgb = CalculateSpecular(lightDirection, cameraDirection, surfaceNormal, material.SpecularReflectance, receivedIrradiance, material.PhongExponent);
         color += diffuseRgb + specularRgb;
     }
 
@@ -321,48 +365,6 @@ int GetPixelIndex(int px, int py, int resolutionX) {
 }
 
 
-
-Rgb CalculateDiffuse(float receivedIrradiance, float3 diffuseReflectance, float3 surfaceNormal,float3 lightDirection)
-{
-    Debug::Assert(receivedIrradiance >= 0.0f, "Irradiance");
-    Debug::Assert(Math::IsNormalized(surfaceNormal), "SurfaceNormal");
-    Debug::Assert(Math::IsNormalized(lightDirection), "LightDirection");
-
-    auto cosNormalAndLightDir = Math::Max(0, Math::Dot(lightDirection, surfaceNormal));
-    return Rgb(diffuseReflectance * cosNormalAndLightDir * receivedIrradiance);
-}
-
-Ray Reflect(float3 surfacePoint, float3 surfaceNormal, float3 cameraDirection)
-{
-    auto newRayOrigin = surfacePoint + surfaceNormal * ShadowRayEpsilon;
-    auto newRayNormal = 2 * surfaceNormal * Math::Dot(cameraDirection, surfaceNormal) - cameraDirection;
-    return Ray(newRayOrigin, newRayNormal);
-}
-
-Rgb CalculateSpecular(float3 lightDirection, float3 cameraDirection, float3 surfaceNormal,
-                      float3 specularReflectance, float receivedIrradiance, float phongExponent) {
-    Debug::Assert(Math::IsNormalized(lightDirection), "LightDir");
-    Debug::Assert(Math::IsNormalized(cameraDirection), "CameraDir");
-    Debug::Assert(Math::IsNormalized(surfaceNormal), "SurfaceNormal");
-
-    auto lightDotNormal = Math::Dot(lightDirection, surfaceNormal);
-    // Angle works like this since both vectors are normalized
-    auto angle = Math::Degrees(Math::Acos(lightDotNormal));
-    // If this assertion fails, take the absolute of angle
-    Debug::Assert(angle > 0.0f, "SpecularAngle");
-
-    // Light is coming from behind the surface
-    if (angle > 90.0f) {
-        return Rgb(0);
-    }
-
-    auto v = lightDirection + cameraDirection;
-    auto halfwayVector = v / Math::Length(v);
-    Debug::Assert(Math::IsNormalized(halfwayVector), "Halfway");
-
-    auto cosNormalAndHalfway = Math::Max(0, Math::Dot(surfaceNormal, halfwayVector));
-    return Rgb(specularReflectance * pow(cosNormalAndHalfway, phongExponent) * receivedIrradiance);
-}
 
 
 
