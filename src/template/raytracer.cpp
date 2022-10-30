@@ -324,7 +324,7 @@ int main(int argc, char *argv[]) {
 
         cout << "Writing to RAM buffer completed" << endl;
 
-        write_ppm("test.ppm", image, pixelCountX, pixelCountY);
+        write_ppm("../test.ppm", image, pixelCountX, pixelCountY);
 
         cout << "Writing PPM file completed." << endl;
 
