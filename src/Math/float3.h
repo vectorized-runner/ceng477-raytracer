@@ -74,6 +74,10 @@ namespace RayTracer {
         return float3(f / v.x, f / v.y, f / v.z);
     }
 
+    static float3 operator*(float f, float3 v) {
+        return float3(f * v.x, f * v.y, f * v.z);
+    }
+
 } // RayTracer
 
 #endif //CENG477_RAYTRACER_FLOAT3_H

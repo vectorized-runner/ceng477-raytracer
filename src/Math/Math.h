@@ -56,9 +56,19 @@ namespace RayTracer {
             return abs(LengthSq(v) - length * length) < Epsilon;
         }
 
-        static bool IsNormalized(float3 v){
+        static bool IsNormalized(float3 v) {
             return IsLengthEqual(v, 1.0f);
         }
+
+        static float3 Normalize(float3 x) {
+            return Rsqrt(Dot(x, x)) * x;
+        }
+
+        static float Rsqrt(float x) {
+            return 1.0f / sqrt(x);
+        }
+
+
     };
 
 } // RayTracer
