@@ -67,7 +67,7 @@ namespace RayTracer {
         }
 
         // TODO-Port:
-        static bool RayTriangleIntersection(Ray ray, Triangle triangle, float &intersectionDistance) {
+        static bool RayTriangleIntersection(Ray ray, Triangle triangle, float& intersectionDistance) {
             auto vertex0 = triangle.Vertex0;
             auto vertex1 = triangle.Vertex1;
             auto vertex2 = triangle.Vertex2;
@@ -115,7 +115,7 @@ namespace RayTracer {
         // TODO-Optimize: Store RadiusSquared on Spheres?
         // TODO-Optimize: Only need to return for 1 root, not 2 roots, not used.
         // TODO-Optimize: On 2 root case, if t0 is greater than zero, we don't have to check t1.
-        static bool RaySphereIntersection(Ray ray, Sphere sphere, float &closestIntersectionDistance) {
+        static bool RaySphereIntersection(Ray ray, Sphere sphere, float& closestIntersectionDistance) {
             Debug::Assert(Math::IsNormalized(ray.Direction), "Ray isn't normalized.");
 
             auto oc = ray.Origin - sphere.Center;
@@ -157,8 +157,7 @@ namespace RayTracer {
                         auto& triangle = mesh.Triangles[triIndex];
                         auto intersectionDistance = 0.0f;
 
-                        if (RayTriangleIntersection(ray, triangle, intersectionDistance))
-                        {
+                        if (RayTriangleIntersection(ray, triangle, intersectionDistance)) {
                             if (smallestIntersectionDistance > intersectionDistance) {
                                 smallestIntersectionDistance = intersectionDistance;
                                 hitObject.Type = ObjectType::MeshTriangleObject;
@@ -174,8 +173,7 @@ namespace RayTracer {
                 auto sphere = SphereData.Spheres[sphereIndex];
                 auto closestIntersectionDistance = 0.0f;
 
-                if (RaySphereIntersection(ray, sphere, closestIntersectionDistance))
-                {
+                if (RaySphereIntersection(ray, sphere, closestIntersectionDistance)) {
                     if (smallestIntersectionDistance > closestIntersectionDistance) {
                         smallestIntersectionDistance = closestIntersectionDistance;
                         hitObject.Type = ObjectType::SphereObject;
@@ -188,8 +186,7 @@ namespace RayTracer {
                 auto& triangle = TriangleData.Triangles[triIndex];
                 auto intersectionDistance = 0.0f;
 
-                if (RayTriangleIntersection(ray, triangle, intersectionDistance))
-                {
+                if (RayTriangleIntersection(ray, triangle, intersectionDistance)) {
                     if (smallestIntersectionDistance > intersectionDistance) {
                         smallestIntersectionDistance = intersectionDistance;
                         hitObject.Type = ObjectType::TriangleObject;

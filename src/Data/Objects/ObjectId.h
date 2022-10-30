@@ -16,13 +16,13 @@ namespace RayTracer {
         int Index;
         int MeshIndex;
 
-        ObjectId(){
+        ObjectId() {
             Type = ObjectType::None;
             Index = 0;
             MeshIndex = 0;
         }
 
-        ObjectId(ObjectType type, int index, int meshIndex){
+        ObjectId(ObjectType type, int index, int meshIndex) {
             Type = type;
             Index = index;
             MeshIndex = meshIndex;
