@@ -11,6 +11,8 @@
 #include "../Data/Objects/Scene.h"
 #include "../Math/float3u.h"
 #include "../Data/Shading/Rgb.h"
+#include "../Data/Camera/CameraData.h"
+#include "../Data/Camera/ImagePlane.h"
 
 using namespace std;
 using namespace RayTracer;
@@ -21,6 +23,13 @@ Rgb BackgroundColor = Rgb(0);
 float ShadowRayEpsilon = 0.0f;
 int MaxBounces = 0;
 Scene scene;
+int CameraCount;
+CameraData* cameras;
+ImagePlane* imagePlanes;
+string* outputFileNames;
+
+// TODO: Normal correctness
+// TODO: Cross product correctness
 
 void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     auto sceneBg = parseScene.background_color;
@@ -29,6 +38,36 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     ShadowRayEpsilon = parseScene.shadow_ray_epsilon;
 
     MaxBounces = parseScene.max_recursion_depth;
+
+    CameraCount = parseScene.cameras.size();
+    cameras = new CameraData[CameraCount];
+    imagePlanes = new ImagePlane[CameraCount];
+    outputFileNames = new string[CameraCount];
+    for (int i = 0; i < CameraCount; ++i) {
+        const auto& parseCam = parseScene.cameras[i];
+        auto& camera = cameras[i];
+        auto& plane = imagePlanes[i];
+        camera.Position = float3(parseCam.position.x, parseCam.position.y, parseCam.position.z);
+        camera.Up = float3(parseCam.up.x, parseCam.up.y, parseCam.up.z);
+        camera.Forward = -float3(parseCam.gaze.x, parseCam.gaze.y, parseCam.gaze.z);
+        camera.Right = Math::Cross(camera.Up, camera.Forward);
+
+        plane.Resolution = Resolution(parseCam.image_width, parseCam.image_height);
+        plane.DistanceToCamera = parseCam.near_distance;
+
+        auto left = parseCam.near_plane.x;
+        auto right = parseCam.near_plane.y;
+        auto top = parseCam.near_plane.z;
+        auto bottom = parseCam.near_plane.w;
+
+        Debug::Assert(abs(left) == abs(right), "ImagePlane");
+        Debug::Assert(abs(top) == abs(bottom), "ImagePlane");
+
+        plane.HalfHorizontalLength = abs(left);
+        plane.HalfVerticalLength = abs(top);
+
+        outputFileNames[i] = parseCam.image_name;
+    }
 
     // TODO: Parse cameras here.
 
@@ -173,6 +212,9 @@ void FreeResources(){
     }
 
     delete[] scene.MeshData.Meshes;
+
+    delete[] cameras;
+    delete[] imagePlanes;
 }
 
 int main(int argc, char *argv[]) {
