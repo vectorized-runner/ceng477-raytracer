@@ -94,7 +94,7 @@ void parser::p_scene::loadFromXml(const std::string &filepath)
     auto child = element->FirstChildElement("AmbientLight");
     stream << child->GetText() << std::endl;
     stream >> ambient_light.x >> ambient_light.y >> ambient_light.z;
-    element = element->FirstChildElement("p_point_light");
+    element = element->FirstChildElement("PointLight");
     p_point_light point_light;
     while (element)
     {
@@ -107,7 +107,7 @@ void parser::p_scene::loadFromXml(const std::string &filepath)
         stream >> point_light.intensity.x >> point_light.intensity.y >> point_light.intensity.z;
 
         point_lights.push_back(point_light);
-        element = element->NextSiblingElement("p_point_light");
+        element = element->NextSiblingElement("PointLight");
     }
 
     //Get Materials
