@@ -15,10 +15,11 @@ namespace RayTracer {
         float3 Value;
 
         Rgb() {
-
+            Value = 0;
         }
 
         Rgb(float3 value) {
+            Debug::Assert(Math::IsNonNegative(value), "Rgb");
             Value = value;
         }
 
