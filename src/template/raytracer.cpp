@@ -464,16 +464,7 @@ int main(int argc, char* argv[]) {
         auto pixelCount = pixelCountX * pixelCountY;
 
         CastPixelRays(camera, plane, colors);
-
         auto* image = new unsigned char[pixelCount * 3];
-
-//        // See if we've got non-zero color values
-//        for (int j = 0; j < pixelCount; ++j) {
-//            const auto& color = colors[j].Value;
-//            if(color.x != 0.0f || color.y != 0.0f || color.z != 0.0f){
-//                Debug::Log("Non-zero Color value " + color.ToString());
-//            }
-//        }
 
         for (int j = 0; j < pixelCount; ++j) {
             const auto& color = colors[j];
@@ -485,7 +476,8 @@ int main(int argc, char* argv[]) {
 
         cout << "Writing to RAM buffer completed" << endl;
 
-        write_ppm("../test.ppm", image, pixelCountX, pixelCountY);
+        // TODO: Fixup this path
+        write_ppm("../outputs/test.ppm", image, pixelCountX, pixelCountY);
 
         cout << "Writing PPM file completed." << endl;
 
