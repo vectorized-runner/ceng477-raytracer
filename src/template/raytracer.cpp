@@ -433,7 +433,6 @@ int main(int argc, char* argv[]) {
         Debug::LogElapsed("Ray Tracing took ", rayTraceBegin, rayTraceEnd);
 
         auto writePPMBegin = steady_clock::now();
-x
         write_ppm(outputFileNames[i].c_str(), image, pixelCountX, pixelCountY);
         auto writePPMEnd = steady_clock::now();
         Debug::LogElapsed("WritePPM took ", writePPMBegin, writePPMEnd);
