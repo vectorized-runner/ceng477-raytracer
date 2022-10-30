@@ -258,6 +258,8 @@ void LogSceneStats(){
 }
 
 void FreeResources(){
+    // TODO: Delete rgb
+
     delete[] scene.PointLights.PointLights;
     delete[] scene.TriangleData.Triangles;
     delete[] scene.TriangleData.Materials;
@@ -297,6 +299,13 @@ int main(int argc, char *argv[]) {
     LogSceneStats();
 
     cout << "Convert Template Data into Scene Data completed.";
+
+    for (int i = 0; i < CameraCount; ++i) {
+        CastPixelRays(cameras[i], imagePlanes[i], outputColors[i]);
+
+        // TODO: Convert to ppm color data
+        // TODO: Write ppm
+    }
 
     // The code below creates a test pattern and writes
     // it to a PPM file to demonstrate the usage of the
