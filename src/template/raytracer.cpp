@@ -296,7 +296,6 @@ Rgb CalculateAmbient(float3 ambientReflectance, float3 ambientRadiance) {
 }
 
 const bool debug_diffuse = true;
-const bool debug_specular = true;
 const bool debug_mirror = true;
 const bool debug_shadow = true;
 
@@ -350,11 +349,8 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
             color = color + diffuseRgb;
         }
 
-        if(debug_specular){
-            const auto specularRgb = CalculateSpecular(lightDirection, cameraDirection, surfaceNormal, material.SpecularReflectance, receivedIrradiance, material.PhongExponent);
-            Debug::Assert(Math::IsNonNegative(specularRgb.Value), "SpecularRgb");
-            color = color + specularRgb;
-        }
+        const auto specularRgb = CalculateSpecular(lightDirection, cameraDirection, surfaceNormal, material.SpecularReflectance, receivedIrradiance, material.PhongExponent);
+        color = color + specularRgb;
     }
 
     if(debug_mirror){
