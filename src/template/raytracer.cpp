@@ -224,7 +224,7 @@ int main(int argc, char *argv[]) {
     cout << "Started Running." << endl;
 
     // Sample usage for reading an XML scene file
-    parser::p_scene scene;
+    parser::p_scene parseScene;
 
     // TODO-Use the correct argument here for the final build!
     auto xmlPath = argv[argc - 1];
@@ -232,11 +232,11 @@ int main(int argc, char *argv[]) {
 
     cout << "XML path is: " << xmlPath << endl;
 
-    scene.loadFromXml(lastArg);
+    parseScene.loadFromXml(lastArg);
 
     cout << "Loading XML Scene completed." << endl;
 
-    ConvertTemplateDataIntoSelfData(scene);
+    ConvertTemplateDataIntoSelfData(parseScene);
     LogSceneStats();
 
     cout << "Convert Template Data into Scene Data completed.";

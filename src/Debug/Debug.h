@@ -18,6 +18,18 @@ namespace RayTracer {
         static void Log(const string &message) {
             cout << message << endl;
         }
+
+        static void Log(const string &message, int i) {
+            cout << message << i << endl;
+        }
+
+        static void Log(const string &message, float f) {
+            cout << message << f << endl;
+        }
+
+        static void Log(const string &message, char* c) {
+            cout << message << c << endl;
+        }
     };
 
 } // RayTracer
