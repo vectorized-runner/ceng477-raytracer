@@ -219,7 +219,63 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
 }
 
 Rgb Shade(Ray ray, float3 cameraPosition, int currentBounces){
-    return Rgb(0);
+    Debug.Assert(IsNormalized(pixelRay.Direction));
+
+    var hitResult = Scene.IntersectRay(pixelRay);
+    var pixelRayHitObject = hitResult.ObjectId;
+    if (pixelRayHitObject.Type == ObjectType.None)
+        return new Rgb(BackgroundColor);
+
+    Debug.Assert(pixelRayHitObject.Type != ObjectType.None);
+
+    if (ToggleDrawIntersections)
+    {
+        var intersectionPoint = pixelRay.GetPoint(hitResult.Distance);
+        Debug.DrawLine(pixelRay.Origin, intersectionPoint, IntersectionColor);
+    }
+
+    var surfacePoint = pixelRay.GetPoint(hitResult.Distance);
+    var (surfaceNormal, material) = GetSurfaceNormalAndMaterial(surfacePoint, pixelRayHitObject);
+    var color = CalculateAmbient(material.AmbientReflectance, Scene.AmbientLight.Radiance);
+    var cameraDirection = normalize(cameraPosition - surfacePoint);
+
+    foreach (var pointLight in Scene.PointLights)
+    {
+        var lightPosition = pointLight.Position;
+        var lightDirection = normalize(lightPosition - surfacePoint);
+        var shadowRayOrigin = surfacePoint + surfaceNormal * ShadowRayEpsilon;
+        var shadowRay = new Ray(shadowRayOrigin, lightDirection);
+        var shadowRayHitResult = Scene.IntersectRay(shadowRay);
+        var lightDistanceSq = distancesq(surfacePoint, lightPosition);
+
+        // TODO-Optimize: We can remove this branch, if ray-scene intersection returns infinite distance by default
+        if (shadowRayHitResult.ObjectId.Type != ObjectType.None)
+        {
+            var hitDistanceSq = shadowRayHitResult.Distance * shadowRayHitResult.Distance;
+            if (hitDistanceSq < lightDistanceSq)
+            {
+                // Shadow ray intersects with an object before light, no contribution from this light
+                continue;
+            }
+        }
+
+        // Shadow ray hit this object again, shouldn't happen
+        Debug.Assert(shadowRayHitResult.ObjectId != pixelRayHitObject);
+
+        var receivedIrradiance = pointLight.Intensity / lightDistanceSq;
+        var diffuseRgb = CalculateDiffuse(receivedIrradiance, material.DiffuseReflectance, surfaceNormal, lightDirection);
+        var specularRgb = CalculateSpecular(lightDirection, cameraDirection, surfaceNormal, material.SpecularReflectance, receivedIrradiance, material.PhongExponent);
+        color += diffuseRgb + specularRgb;
+    }
+
+    if (material.IsMirror && currentRayBounce < MaxReflectionBounces)
+    {
+        var reflectRay = Reflect(surfacePoint, surfaceNormal, cameraDirection);
+        var mirrorReflectance = material.MirrorReflectance;
+        color += new Rgb(mirrorReflectance * Shade(reflectRay, cameraPosition, currentRayBounce + 1).Value);
+    }
+
+    return color;
 }
 
 int GetPixelIndex(int px, int py, int resolutionX) {
