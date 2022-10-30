@@ -242,6 +242,31 @@ Rgb CalculateDiffuse(float receivedIrradiance, float3 diffuseReflectance, float3
     return Rgb(diffuseReflectance * cosNormalAndLightDir * receivedIrradiance);
 }
 
+Rgb CalculateSpecular(float3 lightDirection, float3 cameraDirection, float3 surfaceNormal,
+                      float3 specularReflectance, float receivedIrradiance, float phongExponent) {
+    Debug::Assert(Math::IsNormalized(lightDirection), "LightDir");
+    Debug::Assert(Math::IsNormalized(cameraDirection), "CameraDir");
+    Debug::Assert(Math::IsNormalized(surfaceNormal), "SurfaceNormal");
+
+    auto lightDotNormal = Math::Dot(lightDirection, surfaceNormal);
+    // Angle works like this since both vectors are normalized
+    auto angle = Math::Degrees(Math::Acos(lightDotNormal));
+    // If this assertion fails, take the absolute of angle
+    Debug::Assert(angle > 0.0f, "SpecularAngle");
+
+    // Light is coming from behind the surface
+    if (angle > 90.0f) {
+        return Rgb(0);
+    }
+
+    auto v = lightDirection + cameraDirection;
+    auto halfwayVector = v / Math::Length(v);
+    Debug::Assert(Math::IsNormalized(halfwayVector), "Halfway");
+
+    auto cosNormalAndHalfway = Math::Max(0, Math::Dot(surfaceNormal, halfwayVector));
+    return Rgb(specularReflectance * pow(cosNormalAndHalfway, phongExponent) * receivedIrradiance);
+}
+
 void CastPixelRays(CameraData cameraData, ImagePlane imagePlane, Rgb* colors) {
     auto resX = imagePlane.Resolution.X;
     auto resY = imagePlane.Resolution.Y;
