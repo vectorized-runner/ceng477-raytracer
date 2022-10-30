@@ -177,22 +177,24 @@ void FreeResources(){
 
 int main(int argc, char *argv[]) {
 
-    cout << "Running Raytracer!" << endl;
+    cout << "Started Running." << endl;
 
     // Sample usage for reading an XML scene file
     parser::p_scene scene;
 
-    cout << "Last arg:" << endl;
-    cout << argv[argc - 1] << endl;
-
-    auto lastArg = argv[argc - 1];
-
     // TODO-Use the correct argument here for the final build!
+    auto xmlPath = argv[argc - 1];
+    auto lastArg = xmlPath;
+
+    cout << "XML path is: " << xmlPath << endl;
+
     scene.loadFromXml(lastArg);
+
+    cout << "Loading XML Scene completed." << endl;
 
     ConvertTemplateDataIntoSelfData(scene);
 
-    cout << "This is after scene load!" << endl;
+    cout << "Convert Template Data into Scene Data completed.";
 
     // The code below creates a test pattern and writes
     // it to a PPM file to demonstrate the usage of the
@@ -228,10 +230,17 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    cout << "This is before write ppm!" << endl;
+    cout << "Writing to RAM buffer completed" << endl;
 
     write_ppm("test.ppm", image, width, height);
 
-    cout << "Finished!" << endl;
+    cout << "Writing PPM file completed." << endl;
 
+    FreeResources();
+
+    cout << "Freeing Resources Completed." << endl;
+
+    cout << "Existing the Program." << endl;
+
+    return 0;
 }
