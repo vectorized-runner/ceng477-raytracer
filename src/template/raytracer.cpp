@@ -232,6 +232,16 @@ Rgb CalculateAmbient(float3 ambientReflectance, float3 ambientRadiance)
     return Rgb(ambientRadiance * ambientReflectance);
 }
 
+Rgb CalculateDiffuse(float receivedIrradiance, float3 diffuseReflectance, float3 surfaceNormal,float3 lightDirection)
+{
+    Debug::Assert(receivedIrradiance >= 0.0f, "Irradiance");
+    Debug::Assert(Math::IsNormalized(surfaceNormal), "SurfaceNormal");
+    Debug::Assert(Math::IsNormalized(lightDirection), "LightDirection");
+
+    auto cosNormalAndLightDir = Math::Max(0, Math::Dot(lightDirection, surfaceNormal));
+    return Rgb(diffuseReflectance * cosNormalAndLightDir * receivedIrradiance);
+}
+
 void CastPixelRays(CameraData cameraData, ImagePlane imagePlane, Rgb* colors) {
     auto resX = imagePlane.Resolution.X;
     auto resY = imagePlane.Resolution.Y;
@@ -305,7 +315,7 @@ int main(int argc, char *argv[]) {
     ConvertTemplateDataIntoSelfData(parseScene);
     LogSceneStats();
 
-    cout << "Convert Template Data into Scene Data completed.";
+    cout << "Convert Template Data into Scene Data completed." << endl;
 
     for (int i = 0; i < CameraCount; ++i) {
         auto colors = outputColors[i];
