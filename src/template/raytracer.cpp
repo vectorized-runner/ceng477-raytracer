@@ -247,6 +247,10 @@ void CastPixelRays(CameraData cameraData, ImagePlane imagePlane, Rgb* colors) {
 
 void LogSceneStats(){
     Debug::Log("CameraCount: " + to_string(CameraCount));
+    Debug::Log("SphereCount: ", scene.SphereData.Count);
+    Debug::Log("TriangleCount: ", scene.TriangleData.Count);
+    Debug::Log("MeshCount: ", scene.MeshData.Count);
+    Debug::Log("PointLightCount: ", scene.PointLights.Count);
 }
 
 void FreeResources(){
