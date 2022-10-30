@@ -12,6 +12,11 @@ namespace RayTracer {
         int X;
         int Y;
 
+        Resolution(int x, int y) {
+            X = x;
+            Y = y;
+        }
+
         string ToString() const {
             return "(" + to_string(X) + ", " + to_string(Y) + ")";
         }
