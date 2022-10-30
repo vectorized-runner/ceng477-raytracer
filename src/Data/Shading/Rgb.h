@@ -11,7 +11,12 @@ namespace RayTracer {
 
     // This RGB value is in [0, 255] range (it's not [0, 1])
     struct Rgb {
+
         float3 Value;
+
+        Rgb() {
+
+        }
 
         Rgb(float3 value) {
             Value = value;
