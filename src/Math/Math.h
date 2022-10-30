@@ -80,6 +80,10 @@ namespace RayTracer {
             return acos(x);
         }
 
+        static bool IsNonNegative(float3 x){
+            return x.x >= 0 && x.y >= 0 && x.z >= 0;
+        }
+
 
     };
 

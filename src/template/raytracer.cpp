@@ -338,6 +338,9 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
                                            lightDirection);
         auto specularRgb = CalculateSpecular(lightDirection, cameraDirection, surfaceNormal,
                                              material.SpecularReflectance, receivedIrradiance, material.PhongExponent);
+
+        Debug::Assert(Math::IsNonNegative(specularRgb.Value), "SpecularRgb");
+        Debug::Assert(Math::IsNonNegative(diffuseRgb.Value), "DiffuseRgb");
         color = color + diffuseRgb + specularRgb;
     }
 
