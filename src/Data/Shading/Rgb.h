@@ -14,23 +14,28 @@ namespace RayTracer {
 
         float3 Value;
 
+        __attribute__((always_inline))
         Rgb() {
             Value = 0;
         }
 
+        __attribute__((always_inline))
         Rgb(float3 value) {
             Debug::Assert(Math::IsNonNegative(value), "Rgb");
             Value = value;
         }
 
+        __attribute__((always_inline))
         Rgb operator+(Rgb other) const {
             return Rgb(Value + other.Value);
         }
 
+        __attribute__((always_inline))
         Rgb operator-(Rgb other) const {
             return Rgb(Value - other.Value);
         }
 
+        __attribute__((always_inline))
         string ToString() const {
             return Value.ToString();
         }

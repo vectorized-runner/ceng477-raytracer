@@ -11,19 +11,23 @@ namespace RayTracer {
         float3 Min;
         float3 Max;
 
+        __attribute__((always_inline))
         AABB() : Min(), Max() {
         }
 
+        __attribute__((always_inline))
         AABB(float3 min, float3 max) {
             Min = min;
             Max = max;
         }
 
+        __attribute__((always_inline))
         void Encapsulate(float3 point) {
             Min = Math::Min(point, Min);
             Max = Math::Max(point, Max);
         }
 
+        __attribute__((always_inline))
         void Encapsulate(AABB other) {
             Min = Math::Min(Min, other.Min);
             Max = Math::Max(Max, other.Max);
