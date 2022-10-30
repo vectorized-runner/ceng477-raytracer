@@ -16,6 +16,7 @@
 
 using namespace std;
 using namespace RayTracer;
+using namespace chrono;
 
 typedef unsigned char RGB[3];
 
@@ -394,6 +395,8 @@ void LogSceneStats() {
     Debug::Log("PointLightCount: ", scene.PointLights.Count);
 }
 
+
+
 void FreeResources() {
     // TODO: Delete rgb
 
@@ -416,9 +419,10 @@ void FreeResources() {
 }
 
 int main(int argc, char* argv[]) {
-    auto fullBegin = chrono::steady_clock::now();
 
-    cout << "Started Running." << endl;
+    cout << "Running RayTracer program." << endl;
+
+    auto fullBegin = steady_clock::now();
 
     // Sample usage for reading an XML scene file
     parser::p_scene parseScene;
@@ -426,19 +430,22 @@ int main(int argc, char* argv[]) {
     // TODO-Use the correct argument here for the final build!
     auto xmlPath = argv[argc - 1];
     auto lastArg = xmlPath;
-
     cout << "XML path is: " << xmlPath << endl;
 
+    auto loadXmlBegin = steady_clock::now();
     parseScene.loadFromXml(lastArg);
+    auto loadXmlEnd = steady_clock::now();
+    Debug::LogElapsed("LoadXML took ", loadXmlBegin, loadXmlEnd);
 
-    cout << "Loading XML Scene completed." << endl;
-
+    auto convertBegin = steady_clock::now();
     ConvertTemplateDataIntoSelfData(parseScene);
+    auto convertEnd = steady_clock::now();
+    Debug::LogElapsed("Converting Data took ", convertBegin, convertEnd);
+
     LogSceneStats();
 
-    cout << "Convert Template Data into Scene Data completed." << endl;
-
     for (int i = 0; i < CameraCount; ++i) {
+        auto rayTraceBegin = steady_clock::now();
         auto colors = outputColors[i];
         auto plane = imagePlanes[i];
         auto camera = cameras[i];
@@ -457,21 +464,18 @@ int main(int argc, char* argv[]) {
             image[3 * j + 2] = (unsigned char)round(Math::Clamp(color.Value.z, 0, 255));
         }
 
-        cout << "Writing to RAM buffer completed" << endl;
+        auto rayTraceEnd = steady_clock::now();
+        Debug::LogElapsed("Ray Tracing took ", rayTraceBegin, rayTraceEnd);
 
+        auto writePPMBegin = steady_clock::now();
         // TODO: Fixup this path
         write_ppm("../outputs/test.ppm", image, pixelCountX, pixelCountY);
-
-        cout << "Writing PPM file completed." << endl;
+        auto writePPMEnd = steady_clock::now();
+        Debug::LogElapsed("WritePPM took ", writePPMBegin, writePPMEnd);
 
         delete[] image;
     }
 
-    FreeResources();
-
-    cout << "Freeing Resources Completed." << endl;
-
-    cout << "Existing the Program." << endl;
     auto fullEnd = chrono::steady_clock::now();
 
     Debug::LogElapsed("Program took ", fullBegin, fullEnd);
