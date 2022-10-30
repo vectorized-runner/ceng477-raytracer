@@ -218,25 +218,63 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     delete[] vertices;
 }
 
-Rgb Shade(Ray ray, float3 cameraPosition, int currentBounces){
-    Debug.Assert(IsNormalized(pixelRay.Direction));
+float3 GetSphereNormal(float3 surfacePoint, int index)
+{
+    auto sphere = scene.SphereData.Spheres[index];
+    auto surfaceNormal = Math::Normalize(surfacePoint - sphere.Center);
+    return surfaceNormal;
+}
 
-    var hitResult = Scene.IntersectRay(pixelRay);
-    var pixelRayHitObject = hitResult.ObjectId;
-    if (pixelRayHitObject.Type == ObjectType.None)
-        return new Rgb(BackgroundColor);
-
-    Debug.Assert(pixelRayHitObject.Type != ObjectType.None);
-
-    if (ToggleDrawIntersections)
+void GetSurfaceNormalAndMaterial(float3 surfacePoint, ObjectId id, float3& outNormal, MaterialData& outMaterial)
+{
+    switch (id.Type)
     {
-        var intersectionPoint = pixelRay.GetPoint(hitResult.Distance);
-        Debug.DrawLine(pixelRay.Origin, intersectionPoint, IntersectionColor);
+        case ObjectType::SphereObject:
+        {
+            outNormal = GetSphereNormal(surfacePoint, id.Index);
+            outMaterial = scene.SphereData.Materials[id.Index];
+            return;
+        }
+        case ObjectType::TriangleObject:
+        {
+            outNormal = scene.TriangleData.Normals[id.Index];
+            outMaterial = scene.TriangleData.Materials[id.Index];
+            return;
+        }
+        case ObjectType::MeshTriangleObject:
+        {
+            outNormal = scene.MeshData.Meshes[id.MeshIndex].TriangleNormals[id.Index];
+            outMaterial = scene.MeshData.Meshes[id.MeshIndex].MaterialData;
+            return;
+        }
+        case ObjectType::None:
+        {
+            Debug::Log("Error: None reached.");
+            return;
+        }
     }
+}
 
-    var surfacePoint = pixelRay.GetPoint(hitResult.Distance);
-    var (surfaceNormal, material) = GetSurfaceNormalAndMaterial(surfacePoint, pixelRayHitObject);
-    var color = CalculateAmbient(material.AmbientReflectance, Scene.AmbientLight.Radiance);
+Rgb CalculateAmbient(float3 ambientReflectance, float3 ambientRadiance)
+{
+    return Rgb(ambientRadiance * ambientReflectance);
+}
+
+Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentBounces){
+    Debug::Assert(Math::IsNormalized(pixelRay.Direction));
+
+    auto hitResult = scene.IntersectRay(pixelRay);
+    auto pixelRayHitObject = hitResult.ObjectId;
+    if (pixelRayHitObject.Type == ObjectType::None)
+        return Rgb(BackgroundColor);
+
+    Debug::Assert(pixelRayHitObject.Type != ObjectType::None, "PixelRayHit");
+
+    auto surfacePoint = pixelRay.GetPoint(hitResult.Distance);
+    float3 surfaceNormal;
+    MaterialData material;
+    GetSurfaceNormalAndMaterial(surfacePoint, pixelRayHitObject, surfaceNormal, material);
+    var color = CalculateAmbient(material.AmbientReflectance, scene.AmbientLight.Radiance);
     var cameraDirection = normalize(cameraPosition - surfacePoint);
 
     foreach (var pointLight in Scene.PointLights)
@@ -282,10 +320,7 @@ int GetPixelIndex(int px, int py, int resolutionX) {
     return px + py * resolutionX;
 }
 
-Rgb CalculateAmbient(float3 ambientReflectance, float3 ambientRadiance)
-{
-    return Rgb(ambientRadiance * ambientReflectance);
-}
+
 
 Rgb CalculateDiffuse(float receivedIrradiance, float3 diffuseReflectance, float3 surfaceNormal,float3 lightDirection)
 {
@@ -329,42 +364,7 @@ Rgb CalculateSpecular(float3 lightDirection, float3 cameraDirection, float3 surf
     return Rgb(specularReflectance * pow(cosNormalAndHalfway, phongExponent) * receivedIrradiance);
 }
 
-float3 GetSphereNormal(float3 surfacePoint, int index)
-{
-    auto sphere = scene.SphereData.Spheres[index];
-    auto surfaceNormal = Math::Normalize(surfacePoint - sphere.Center);
-    return surfaceNormal;
-}
 
-void GetSurfaceNormalAndMaterial(float3 surfacePoint, ObjectId id, float3& outNormal, MaterialData& outMaterial)
-{
-    switch (id.Type)
-    {
-        case ObjectType::SphereObject:
-        {
-            outNormal = GetSphereNormal(surfacePoint, id.Index);
-            outMaterial = scene.SphereData.Materials[id.Index];
-            return;
-        }
-        case ObjectType::TriangleObject:
-        {
-            outNormal = scene.TriangleData.Normals[id.Index];
-            outMaterial = scene.TriangleData.Materials[id.Index];
-            return;
-        }
-        case ObjectType::MeshTriangleObject:
-        {
-            outNormal = scene.MeshData.Meshes[id.MeshIndex].TriangleNormals[id.Index];
-            outMaterial = scene.MeshData.Meshes[id.MeshIndex].MaterialData;
-            return;
-        }
-        case ObjectType::None:
-        {
-            Debug::Log("Error: None reached.");
-            return;
-        }
-    }
-}
 
 void CastPixelRays(CameraData cameraData, ImagePlane imagePlane, Rgb* colors) {
     auto resX = imagePlane.Resolution.X;
