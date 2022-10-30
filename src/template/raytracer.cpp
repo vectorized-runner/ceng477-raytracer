@@ -31,7 +31,7 @@ string* outputFileNames;
 // TODO: Normal correctness
 // TODO: Cross product correctness
 
-void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
+void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
     auto sceneBg = parseScene.background_color;
     BackgroundColor = Rgb(float3(sceneBg.x, sceneBg.y, sceneBg.z));
 
@@ -47,7 +47,7 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     cameras = new CameraData[CameraCount];
     imagePlanes = new ImagePlane[CameraCount];
     outputFileNames = new string[CameraCount];
-    outputColors = new Rgb*[CameraCount];
+    outputColors = new Rgb* [CameraCount];
 
     for (int i = 0; i < CameraCount; ++i) {
         const auto& parseCam = parseScene.cameras[i];
@@ -219,8 +219,8 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
 }
 
 
-Rgb CalculateDiffuse(float3 receivedIrradiance, float3 diffuseReflectance, float3 surfaceNormal,float3 lightDirection)
-{
+Rgb
+CalculateDiffuse(float3 receivedIrradiance, float3 diffuseReflectance, float3 surfaceNormal, float3 lightDirection) {
     // Debug::Assert(receivedIrradiance >= 0.0f, "Irradiance");
     Debug::Assert(Math::IsNormalized(surfaceNormal), "SurfaceNormal");
     Debug::Assert(Math::IsNormalized(lightDirection), "LightDirection");
@@ -229,8 +229,7 @@ Rgb CalculateDiffuse(float3 receivedIrradiance, float3 diffuseReflectance, float
     return Rgb(diffuseReflectance * cosNormalAndLightDir * receivedIrradiance);
 }
 
-Ray Reflect(float3 surfacePoint, float3 surfaceNormal, float3 cameraDirection)
-{
+Ray Reflect(float3 surfacePoint, float3 surfaceNormal, float3 cameraDirection) {
     auto newRayOrigin = surfacePoint + surfaceNormal * ShadowRayEpsilon;
     auto newRayNormal = 2 * surfaceNormal * Math::Dot(cameraDirection, surfaceNormal) - cameraDirection;
     return Ray(newRayOrigin, newRayNormal);
@@ -262,49 +261,41 @@ Rgb CalculateSpecular(float3 lightDirection, float3 cameraDirection, float3 surf
 }
 
 
-float3 GetSphereNormal(float3 surfacePoint, int index)
-{
+float3 GetSphereNormal(float3 surfacePoint, int index) {
     auto sphere = scene.SphereData.Spheres[index];
     auto surfaceNormal = Math::Normalize(surfacePoint - sphere.Center);
     return surfaceNormal;
 }
 
-void GetSurfaceNormalAndMaterial(float3 surfacePoint, ObjectId id, float3& outNormal, MaterialData& outMaterial)
-{
-    switch (id.Type)
-    {
-        case ObjectType::SphereObject:
-        {
+void GetSurfaceNormalAndMaterial(float3 surfacePoint, ObjectId id, float3& outNormal, MaterialData& outMaterial) {
+    switch (id.Type) {
+        case ObjectType::SphereObject: {
             outNormal = GetSphereNormal(surfacePoint, id.Index);
             outMaterial = scene.SphereData.Materials[id.Index];
             return;
         }
-        case ObjectType::TriangleObject:
-        {
+        case ObjectType::TriangleObject: {
             outNormal = scene.TriangleData.Normals[id.Index];
             outMaterial = scene.TriangleData.Materials[id.Index];
             return;
         }
-        case ObjectType::MeshTriangleObject:
-        {
+        case ObjectType::MeshTriangleObject: {
             outNormal = scene.MeshData.Meshes[id.MeshIndex].TriangleNormals[id.Index];
             outMaterial = scene.MeshData.Meshes[id.MeshIndex].MaterialData;
             return;
         }
-        case ObjectType::None:
-        {
+        case ObjectType::None: {
             Debug::Log("Error: None reached.");
             return;
         }
     }
 }
 
-Rgb CalculateAmbient(float3 ambientReflectance, float3 ambientRadiance)
-{
+Rgb CalculateAmbient(float3 ambientReflectance, float3 ambientRadiance) {
     return Rgb(ambientRadiance * ambientReflectance);
 }
 
-Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce){
+Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
     Debug::Assert(Math::IsNormalized(pixelRay.Direction), "PixelRayNormalize");
 
     auto hitResult = scene.IntersectRay(pixelRay);
@@ -331,11 +322,9 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce){
         auto lightDistanceSq = Math::DistanceSq(surfacePoint, lightPosition);
 
         // TODO-Optimize: We can remove this branch, if ray-scene intersection returns infinite distance by default
-        if (shadowRayHitResult.ObjectId.Type != ObjectType::None)
-        {
+        if (shadowRayHitResult.ObjectId.Type != ObjectType::None) {
             auto hitDistanceSq = shadowRayHitResult.Distance * shadowRayHitResult.Distance;
-            if (hitDistanceSq < lightDistanceSq)
-            {
+            if (hitDistanceSq < lightDistanceSq) {
                 // Shadow ray intersects with an object before light, no contribution from this light
                 continue;
             }
@@ -345,13 +334,14 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce){
         Debug::Assert(shadowRayHitResult.ObjectId != pixelRayHitObject, "ShadowRayHitSameObject");
 
         auto receivedIrradiance = pointLight.Intensity / lightDistanceSq;
-        auto diffuseRgb = CalculateDiffuse(receivedIrradiance, material.DiffuseReflectance, surfaceNormal, lightDirection);
-        auto specularRgb = CalculateSpecular(lightDirection, cameraDirection, surfaceNormal, material.SpecularReflectance, receivedIrradiance, material.PhongExponent);
+        auto diffuseRgb = CalculateDiffuse(receivedIrradiance, material.DiffuseReflectance, surfaceNormal,
+                                           lightDirection);
+        auto specularRgb = CalculateSpecular(lightDirection, cameraDirection, surfaceNormal,
+                                             material.SpecularReflectance, receivedIrradiance, material.PhongExponent);
         color = color + diffuseRgb + specularRgb;
     }
 
-    if (material.IsMirror && currentRayBounce < MaxBounces)
-    {
+    if (material.IsMirror && currentRayBounce < MaxBounces) {
         auto reflectRay = Reflect(surfacePoint, surfaceNormal, cameraDirection);
         auto mirrorReflectance = material.MirrorReflectance;
         color = color + Rgb(mirrorReflectance * Shade(reflectRay, cameraPosition, currentRayBounce + 1).Value);
@@ -363,9 +353,6 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce){
 int GetPixelIndex(int px, int py, int resolutionX) {
     return px + py * resolutionX;
 }
-
-
-
 
 
 void CastPixelRays(CameraData cameraData, ImagePlane imagePlane, Rgb* colors) {
@@ -392,7 +379,7 @@ void CastPixelRays(CameraData cameraData, ImagePlane imagePlane, Rgb* colors) {
     }
 }
 
-void LogSceneStats(){
+void LogSceneStats() {
     Debug::Log("CameraCount: " + to_string(CameraCount));
     Debug::Log("SphereCount: ", scene.SphereData.Count);
     Debug::Log("TriangleCount: ", scene.TriangleData.Count);
@@ -400,7 +387,7 @@ void LogSceneStats(){
     Debug::Log("PointLightCount: ", scene.PointLights.Count);
 }
 
-void FreeResources(){
+void FreeResources() {
     // TODO: Delete rgb
 
     delete[] scene.PointLights.PointLights;
@@ -410,7 +397,7 @@ void FreeResources(){
     delete[] scene.SphereData.Materials;
     delete[] scene.SphereData.Spheres;
 
-    for(int i = 0; i < scene.MeshData.Count; i++){
+    for (int i = 0; i < scene.MeshData.Count; i++) {
         delete[] scene.MeshData.Meshes[i].Triangles;
         delete[] scene.MeshData.Meshes[i].TriangleNormals;
     }
@@ -421,7 +408,7 @@ void FreeResources(){
     delete[] imagePlanes;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
 
     cout << "Started Running." << endl;
 
@@ -453,7 +440,7 @@ int main(int argc, char *argv[]) {
 
         CastPixelRays(camera, plane, colors);
 
-        auto *image = new unsigned char[pixelCount * 3];
+        auto* image = new unsigned char[pixelCount * 3];
 
         for (int j = 0; j < pixelCount; ++j) {
             const auto& color = colors[j];
