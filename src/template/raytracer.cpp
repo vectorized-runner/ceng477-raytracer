@@ -385,14 +385,6 @@ void CastPixelRays(CameraData cameraData, ImagePlane imagePlane, Rgb* colors) {
     }
 }
 
-void LogSceneStats() {
-    Debug::Log("CameraCount: " + to_string(CameraCount));
-    Debug::Log("SphereCount: ", scene.SphereData.Count);
-    Debug::Log("TriangleCount: ", scene.TriangleData.Count);
-    Debug::Log("MeshCount: ", scene.MeshData.Count);
-    Debug::Log("PointLightCount: ", scene.PointLights.Count);
-}
-
 int main(int argc, char* argv[]) {
 
     cout << "Running RayTracer program." << endl;
@@ -416,8 +408,6 @@ int main(int argc, char* argv[]) {
     ConvertTemplateDataIntoSelfData(parseScene);
     auto convertEnd = steady_clock::now();
     Debug::LogElapsed("Converting Data took ", convertBegin, convertEnd);
-
-    LogSceneStats();
 
     for (int i = 0; i < CameraCount; ++i) {
         auto rayTraceBegin = steady_clock::now();
