@@ -9,7 +9,6 @@
 #include "../Data/Objects/Sphere.h"
 #include "../Data/Objects/Mesh.h"
 #include "../Data/Objects/Scene.h"
-#include "../Math/float3u.h"
 #include "../Data/Shading/Rgb.h"
 #include "../Data/Camera/CameraData.h"
 #include "../Data/Camera/ImagePlane.h"
@@ -240,6 +239,13 @@ Rgb CalculateDiffuse(float receivedIrradiance, float3 diffuseReflectance, float3
 
     auto cosNormalAndLightDir = Math::Max(0, Math::Dot(lightDirection, surfaceNormal));
     return Rgb(diffuseReflectance * cosNormalAndLightDir * receivedIrradiance);
+}
+
+Ray Reflect(float3 surfacePoint, float3 surfaceNormal, float3 cameraDirection)
+{
+    auto newRayOrigin = surfacePoint + surfaceNormal * ShadowRayEpsilon;
+    auto newRayNormal = 2 * surfaceNormal * Math::Dot(cameraDirection, surfaceNormal) - cameraDirection;
+    return Ray(newRayOrigin, newRayNormal);
 }
 
 Rgb CalculateSpecular(float3 lightDirection, float3 cameraDirection, float3 surfaceNormal,
