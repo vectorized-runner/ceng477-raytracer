@@ -394,7 +394,6 @@ int main(int argc, char* argv[]) {
     // Sample usage for reading an XML scene file
     parser::p_scene parseScene;
 
-    // TODO-Use the correct argument here for the final build!
     auto xmlPath = argv[argc - 1];
     auto lastArg = xmlPath;
     cout << "XML path is: " << xmlPath << endl;
