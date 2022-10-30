@@ -12,6 +12,11 @@ namespace RayTracer {
         int X;
         int Y;
 
+        Resolution(){
+            X = 0;
+            Y = 0;
+        }
+
         Resolution(int x, int y) {
             X = x;
             Y = y;
