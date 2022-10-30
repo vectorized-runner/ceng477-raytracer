@@ -182,7 +182,7 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
             meshTriangle.Vertex0 = float3(v0.x, v0.y, v0.z);
             meshTriangle.Vertex1 = float3(v1.x, v1.y, v1.z);
             meshTriangle.Vertex2 = float3(v2.x, v2.y, v2.z);
-            mesh.TriangleNormals[j] = triangles[i].GetNormal();
+            mesh.TriangleNormals[j] = mesh.Triangles[i].GetNormal();
         }
 
         mesh.CalculateAABB();
