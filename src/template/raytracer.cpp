@@ -143,21 +143,21 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
     }
 
     auto triangleCount = parseScene.triangles.size();
-    Debug::Assert(triangleCount > 0, "TriangleCount");
-
-    auto triangles = new Triangle[triangleCount];
-    auto triangleMaterials = new MaterialData[triangleCount];
-    auto triangleNormals = new float3[triangleCount];
-    for (int i = 0; i < triangleCount; ++i) {
-        const auto& parseTriangle = parseScene.triangles[i];
-        auto v0 = vertices[parseTriangle.indices.v0_id - 1];
-        auto v1 = vertices[parseTriangle.indices.v1_id - 1];
-        auto v2 = vertices[parseTriangle.indices.v2_id - 1];
-        triangles[i].Vertex0 = float3(v0.x, v0.y, v0.z);
-        triangles[i].Vertex1 = float3(v1.x, v1.y, v1.z);
-        triangles[i].Vertex2 = float3(v2.x, v2.y, v2.z);
-        triangleNormals[i] = triangles[i].GetNormal();
-        triangleMaterials[i] = materials[parseTriangle.material_id - 1];
+    if(triangleCount > 0){
+        auto triangles = new Triangle[triangleCount];
+        auto triangleMaterials = new MaterialData[triangleCount];
+        auto triangleNormals = new float3[triangleCount];
+        for (int i = 0; i < triangleCount; ++i) {
+            const auto& parseTriangle = parseScene.triangles[i];
+            auto v0 = vertices[parseTriangle.indices.v0_id - 1];
+            auto v1 = vertices[parseTriangle.indices.v1_id - 1];
+            auto v2 = vertices[parseTriangle.indices.v2_id - 1];
+            triangles[i].Vertex0 = float3(v0.x, v0.y, v0.z);
+            triangles[i].Vertex1 = float3(v1.x, v1.y, v1.z);
+            triangles[i].Vertex2 = float3(v2.x, v2.y, v2.z);
+            triangleNormals[i] = triangles[i].GetNormal();
+            triangleMaterials[i] = materials[parseTriangle.material_id - 1];
+        }
     }
 
     auto meshCount = parseScene.meshes.size();
