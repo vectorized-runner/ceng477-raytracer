@@ -295,8 +295,6 @@ Rgb CalculateAmbient(float3 ambientReflectance, float3 ambientRadiance) {
     return Rgb(ambientRadiance * ambientReflectance);
 }
 
-const bool debug_mirror = true;
-
 Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
     Debug::Assert(Math::IsNormalized(pixelRay.Direction), "PixelRayNormalize");
 
@@ -343,12 +341,10 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
         color = color + specularRgb + diffuseRgb;
     }
 
-    if(debug_mirror){
-        if (material.IsMirror && currentRayBounce < MaxBounces) {
-            auto reflectRay = Reflect(surfacePoint, surfaceNormal, cameraDirection);
-            auto mirrorReflectance = material.MirrorReflectance;
-            color = color + Rgb(mirrorReflectance * Shade(reflectRay, cameraPosition, currentRayBounce + 1).Value);
-        }
+    if (material.IsMirror && currentRayBounce < MaxBounces) {
+        auto reflectRay = Reflect(surfacePoint, surfaceNormal, cameraDirection);
+        auto mirrorReflectance = material.MirrorReflectance;
+        color = color + Rgb(mirrorReflectance * Shade(reflectRay, cameraPosition, currentRayBounce + 1).Value);
     }
 
     return color;
