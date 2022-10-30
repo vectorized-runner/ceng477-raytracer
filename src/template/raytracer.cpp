@@ -306,8 +306,9 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
 
     auto hitResult = scene.IntersectRay(pixelRay);
     auto pixelRayHitObject = hitResult.ObjectId;
-    if (pixelRayHitObject.Type == ObjectType::None)
-        return Rgb(BackgroundColor);
+    if (pixelRayHitObject.Type == ObjectType::None){
+        return BackgroundColor;
+    }
 
     Debug::Assert(pixelRayHitObject.Type != ObjectType::None, "PixelRayHit");
 
