@@ -62,6 +62,10 @@ namespace RayTracer {
             return float3(x / other, y / other, z / other);
         }
 
+        float3 operator-() const{
+            return float3(-x, -y, -z);
+        }
+
         string ToString() const {
             return "(" + to_string(x) + ", " + to_string(y) + ", " + to_string(z) + ")";
         }
