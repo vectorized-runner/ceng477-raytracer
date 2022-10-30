@@ -39,7 +39,7 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     auto pointLightCount = parseScene.point_lights.size();
     auto pointLights = new PointLightData[pointLightCount];
     for (int i = 0; i < pointLightCount; ++i) {
-        auto& parseLight = parseScene.point_lights[i];
+        const auto& parseLight = parseScene.point_lights[i];
         auto& light = pointLights[i];
         auto intensity = parseLight.intensity;
         auto position = parseLight.position;
@@ -51,7 +51,7 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     auto materials = new MaterialData[materialCount];
 
     for (int i = 0; i < materialCount; ++i) {
-        auto& parseMat = parseScene.materials[i];
+        const auto& parseMat = parseScene.materials[i];
         auto& material = materials[i];
         auto ambient = parseMat.ambient;
         auto diffuse = parseMat.diffuse;
@@ -71,7 +71,7 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     auto vertexCount = parseScene.vertex_data.size();
     auto vertices = new float3[vertexCount];
     for (int i = 0; i < vertexCount; ++i) {
-        auto& parseVertex = parseScene.vertex_data[i];
+        const auto& parseVertex = parseScene.vertex_data[i];
         vertices[i] = float3(parseVertex.x, parseVertex.y, parseVertex.z);
     }
 
@@ -81,7 +81,7 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     auto sphereMaterials = new MaterialData[sphereCount];
 
     for (int i = 0; i < sphereCount; ++i) {
-        auto& parseSphere = parseScene.spheres[i];
+        const auto& parseSphere = parseScene.spheres[i];
         auto& sphere = spheres[i];
         sphere.RadiusSquared = parseSphere.radius * parseSphere.radius;
         sphere.Center = vertices[parseSphere.center_vertex_id - 1];
@@ -93,7 +93,7 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     auto triangleMaterials = new MaterialData[triangleCount];
     auto triangleNormals = new float3[triangleCount];
     for (int i = 0; i < triangleCount; ++i) {
-        auto& parseTriangle = parseScene.triangles[i];
+        const auto& parseTriangle = parseScene.triangles[i];
         auto v0 = vertices[parseTriangle.indices.v0_id - 1];
         auto v1 = vertices[parseTriangle.indices.v1_id - 1];
         auto v2 = vertices[parseTriangle.indices.v2_id - 1];
@@ -107,7 +107,7 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     auto meshCount = parseScene.meshes.size();
     auto meshes = new Mesh[meshCount];
     for (int i = 0; i < meshCount; ++i) {
-        auto& parseMesh = parseScene.meshes[i];
+        const auto& parseMesh = parseScene.meshes[i];
         auto& mesh = meshes[i];
         auto meshTriangles = parseMesh.faces.size();
         mesh.MaterialData = materials[parseMesh.material_id - 1];
@@ -116,7 +116,7 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
         mesh.TriangleNormals = new float3[meshTriangles];
 
         for (int j = 0; j < meshTriangles; ++j) {
-            auto& parseTriangle = parseMesh.faces[j];
+            const auto& parseTriangle = parseMesh.faces[j];
             auto& meshTriangle = mesh.Triangles[j];
             auto v0 = vertices[parseTriangle.v0_id - 1];
             auto v1 = vertices[parseTriangle.v1_id - 1];
