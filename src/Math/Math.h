@@ -20,10 +20,6 @@ namespace RayTracer {
             return (x * y.yzx() - x.yzx() * y).yzx();
         }
 
-        static float3 Length(float3 v) {
-            return sqrt(Dot(v, v));
-        }
-
         static float Dot(float3 x, float3 y) {
             return x.x * y.x + x.y * y.y + x.z * y.z;
         }
@@ -48,6 +44,10 @@ namespace RayTracer {
             return 1.0f / x;
         }
 
+        static float Length(float3 x) {
+            return sqrt(Dot(x, x));
+        }
+
         static float LengthSq(float3 v) {
             return Dot(v, v);
         }
@@ -66,6 +66,14 @@ namespace RayTracer {
 
         static float Rsqrt(float x) {
             return 1.0f / sqrt(x);
+        }
+
+        static float Degrees(float x) {
+            return x * 57.295779513f;
+        }
+
+        static float Acos(float x) {
+            return acos(x);
         }
 
 
