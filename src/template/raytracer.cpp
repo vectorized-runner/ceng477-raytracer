@@ -128,7 +128,7 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
 
     // If the ID is 1, it corresponds to 0th index, so decrement by one
     auto sphereCount = parseScene.spheres.size();
-    if(sphereCount > 0){
+    if (sphereCount > 0) {
         auto spheres = new Sphere[sphereCount];
         auto sphereMaterials = new MaterialData[sphereCount];
 
@@ -149,7 +149,7 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
     }
 
     auto triangleCount = parseScene.triangles.size();
-    if(triangleCount > 0){
+    if (triangleCount > 0) {
         auto triangles = new Triangle[triangleCount];
         auto triangleMaterials = new MaterialData[triangleCount];
         auto triangleNormals = new float3[triangleCount];
@@ -206,9 +206,6 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
     MeshData meshData;
     meshData.Count = meshCount;
     meshData.Meshes = meshes;
-
-
-
 
 
     scene.MeshData = meshData;
@@ -306,7 +303,7 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
 
     auto hitResult = scene.IntersectRay(pixelRay);
     auto pixelRayHitObject = hitResult.ObjectId;
-    if (pixelRayHitObject.Type == ObjectType::None){
+    if (pixelRayHitObject.Type == ObjectType::None) {
         return BackgroundColor;
     }
 
@@ -342,8 +339,11 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
         Debug::Assert(shadowRayHitResult.ObjectId != pixelRayHitObject, "ShadowRayHitSameObject");
 
         const auto receivedIrradiance = pointLight.Intensity / lightDistanceSq;
-        const auto diffuseRgb = CalculateDiffuse(receivedIrradiance, material.DiffuseReflectance, surfaceNormal,lightDirection);
-        const auto specularRgb = CalculateSpecular(lightDirection, cameraDirection, surfaceNormal, material.SpecularReflectance, receivedIrradiance, material.PhongExponent);
+        const auto diffuseRgb = CalculateDiffuse(receivedIrradiance, material.DiffuseReflectance, surfaceNormal,
+                                                 lightDirection);
+        const auto specularRgb = CalculateSpecular(lightDirection, cameraDirection, surfaceNormal,
+                                                   material.SpecularReflectance, receivedIrradiance,
+                                                   material.PhongExponent);
         color = color + specularRgb + diffuseRgb;
     }
 
