@@ -184,11 +184,12 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     }
 
     MeshData meshData;
+    meshData.Count = meshCount;
     meshData.Meshes = meshes;
 
     TriangleData triangleData;
-    triangleData.Triangles = triangles;
     triangleData.Count = triangleCount;
+    triangleData.Triangles = triangles;
     triangleData.Materials = triangleMaterials;
     triangleData.Normals = triangleNormals;
 
