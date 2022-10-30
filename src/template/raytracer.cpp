@@ -453,9 +453,9 @@ int main(int argc, char* argv[]) {
         for (int j = 0; j < pixelCount; ++j) {
             const auto& color = colors[j];
             // Write rgb, round to nearest
-            image[j++] = (unsigned char)round(color.Value.x);
-            image[j++] = (unsigned char)round(color.Value.y);
-            image[j++] = (unsigned char)round(color.Value.z);
+            image[3 * j] = (unsigned char)round(color.Value.x);
+            image[3 * j + 1] = (unsigned char)round(color.Value.y);
+            image[3 * j + 2] = (unsigned char)round(color.Value.z);
         }
 
         cout << "Writing to RAM buffer completed" << endl;
