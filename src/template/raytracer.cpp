@@ -140,6 +140,13 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
             sphere.Center = vertices[parseSphere.center_vertex_id - 1];
             sphereMaterials[i] = materials[parseSphere.material_id - 1];
         }
+
+        SphereData sphereData;
+        sphereData.Count = sphereCount;
+        sphereData.Materials = sphereMaterials;
+        sphereData.Spheres = spheres;
+
+        scene.SphereData = sphereData;
     }
 
     auto triangleCount = parseScene.triangles.size();
@@ -158,6 +165,14 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
             triangleNormals[i] = triangles[i].GetNormal();
             triangleMaterials[i] = materials[parseTriangle.material_id - 1];
         }
+
+        TriangleData triangleData;
+        triangleData.Count = triangleCount;
+        triangleData.Triangles = triangles;
+        triangleData.Materials = triangleMaterials;
+        triangleData.Normals = triangleNormals;
+
+        scene.TriangleData = triangleData;
     }
 
     auto meshCount = parseScene.meshes.size();
@@ -192,20 +207,11 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
     meshData.Count = meshCount;
     meshData.Meshes = meshes;
 
-    TriangleData triangleData;
-    triangleData.Count = triangleCount;
-    triangleData.Triangles = triangles;
-    triangleData.Materials = triangleMaterials;
-    triangleData.Normals = triangleNormals;
 
-    SphereData sphereData;
-    sphereData.Count = sphereCount;
-    sphereData.Materials = sphereMaterials;
-    sphereData.Spheres = spheres;
 
-    scene.SphereData = sphereData;
+
+
     scene.MeshData = meshData;
-    scene.TriangleData = triangleData;
 
     scene.PointLights.Count = pointLightCount;
     scene.PointLights.PointLights = pointLights;
