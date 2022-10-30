@@ -3,8 +3,10 @@
 #define CENG477_RAYTRACER_DEBUG_H
 
 #include <iostream>
+#include <chrono>
 
 using namespace std;
+using namespace chrono;
 
 #ifndef Self_Debug
 //#define Self_Debug
@@ -13,6 +15,10 @@ using namespace std;
 namespace RayTracer {
 
     struct Debug {
+        static void LogElapsed(const string& message, steady_clock::time_point begin, steady_clock::time_point end) {
+            cout << message << duration_cast<milliseconds>(end - begin).count() << " ms." << endl;
+        }
+
         __attribute__((always_inline))
         static void Assert(bool condition, const string& message) {
 #ifdef Self_Debug

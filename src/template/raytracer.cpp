@@ -416,7 +416,7 @@ void FreeResources() {
 }
 
 int main(int argc, char* argv[]) {
-    auto begin = chrono::steady_clock::now();
+    auto fullBegin = chrono::steady_clock::now();
 
     cout << "Started Running." << endl;
 
@@ -472,10 +472,10 @@ int main(int argc, char* argv[]) {
     cout << "Freeing Resources Completed." << endl;
 
     cout << "Existing the Program." << endl;
+    auto fullEnd = chrono::steady_clock::now();
 
-    auto end = chrono::steady_clock::now();
-
-    cout << "Milliseconds: " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << endl;
+    Debug::LogElapsed("Program took ", fullBegin, fullEnd);
+    cout << "Done!" << endl;
 
     return 0;
 }
