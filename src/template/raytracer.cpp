@@ -237,7 +237,7 @@ Ray Reflect(float3 surfacePoint, float3 surfaceNormal, float3 cameraDirection)
 }
 
 Rgb CalculateSpecular(float3 lightDirection, float3 cameraDirection, float3 surfaceNormal,
-                      float3 specularReflectance, float receivedIrradiance, float phongExponent) {
+                      float3 specularReflectance, float3 receivedIrradiance, float phongExponent) {
     Debug::Assert(Math::IsNormalized(lightDirection), "LightDir");
     Debug::Assert(Math::IsNormalized(cameraDirection), "CameraDir");
     Debug::Assert(Math::IsNormalized(surfaceNormal), "SurfaceNormal");
@@ -342,12 +342,12 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce){
         }
 
         // Shadow ray hit this object again, shouldn't happen
-        Debug::Assert(shadowRayHitResult.ObjectId != pixelRayHitObject);
+        Debug::Assert(shadowRayHitResult.ObjectId != pixelRayHitObject, "ShadowRayHitSameObject");
 
         auto receivedIrradiance = pointLight.Intensity / lightDistanceSq;
         auto diffuseRgb = CalculateDiffuse(receivedIrradiance, material.DiffuseReflectance, surfaceNormal, lightDirection);
         auto specularRgb = CalculateSpecular(lightDirection, cameraDirection, surfaceNormal, material.SpecularReflectance, receivedIrradiance, material.PhongExponent);
-        color += diffuseRgb + specularRgb;
+        color = color + diffuseRgb + specularRgb;
     }
 
     if (material.IsMirror && currentRayBounce < MaxBounces)
