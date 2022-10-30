@@ -32,7 +32,7 @@ namespace RayTracer {
             aabb.Max = Math::FloatMin;
 
             for (int i = 0; i < MeshData.Count; ++i) {
-                aabb.Encapsulate(MeshData.Meshes[i].AABB);
+                aabb.Encapsulate(MeshData.Meshes[i].SelfAABB);
             }
 
             for (int i = 0; i < TriangleData.Count; ++i) {
@@ -154,7 +154,7 @@ namespace RayTracer {
 
             for (int meshIndex = 0; meshIndex < MeshData.Count; meshIndex++) {
                 auto& mesh = MeshData.Meshes[meshIndex];
-                if (RayAABBIntersection(ray, mesh.AABB)) {
+                if (RayAABBIntersection(ray, mesh.SelfAABB)) {
                     for (auto triIndex = 0; triIndex < mesh.TriangleCount; triIndex++) {
                         auto& triangle = mesh.Triangles[triIndex];
                         auto intersectionDistance = 0.0f;
