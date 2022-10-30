@@ -26,6 +26,7 @@ Scene scene;
 int CameraCount;
 CameraData* cameras;
 ImagePlane* imagePlanes;
+Rgb** outputColors;
 string* outputFileNames;
 
 // TODO: Normal correctness
@@ -47,6 +48,7 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     cameras = new CameraData[CameraCount];
     imagePlanes = new ImagePlane[CameraCount];
     outputFileNames = new string[CameraCount];
+    outputColors = new Rgb*[CameraCount];
     for (int i = 0; i < CameraCount; ++i) {
         const auto& parseCam = parseScene.cameras[i];
         auto& camera = cameras[i];
@@ -58,6 +60,8 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
 
         plane.Resolution = Resolution(parseCam.image_width, parseCam.image_height);
         plane.DistanceToCamera = parseCam.near_distance;
+
+        outputColors[i] = new Rgb[plane.Resolution.X * plane.Resolution.Y];
 
         auto left = parseCam.near_plane.x;
         auto right = parseCam.near_plane.y;
