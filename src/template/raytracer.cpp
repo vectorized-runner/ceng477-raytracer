@@ -233,7 +233,7 @@ void CastPixelRays(CameraData cameraData, ImagePlane imagePlane, Rgb* colors) {
 
     // Traverse order swapped for better cache usage
     // arrayIndex = x + y * resX
-    for (int y = 0; y < resY; y++)
+    for (int y = 0; y < resY; y++) {
         for (int x = 0; x < resX; x++) {
             auto rightMove = (x + 0.5f) * horizontalLength / resX;
             auto downMove = (y + 0.5f) * verticalLength / resY;
@@ -242,6 +242,7 @@ void CastPixelRays(CameraData cameraData, ImagePlane imagePlane, Rgb* colors) {
             auto index = GetPixelIndex(x, y, resX);
             colors[index] = Shade(ray, cameraPosition, 0);
         }
+    }
 }
 
 void LogSceneStats(){
