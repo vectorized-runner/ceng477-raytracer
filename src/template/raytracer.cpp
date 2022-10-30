@@ -296,7 +296,6 @@ Rgb CalculateAmbient(float3 ambientReflectance, float3 ambientRadiance) {
 }
 
 const bool debug_mirror = true;
-const bool debug_shadow = true;
 
 Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
     Debug::Assert(Math::IsNormalized(pixelRay.Direction), "PixelRayNormalize");
@@ -326,19 +325,17 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
         const auto shadowRayHitResult = scene.IntersectRay(shadowRay);
         const auto lightDistanceSq = Math::DistanceSq(surfacePoint, lightPosition);
 
-        if(debug_shadow){
-            // TODO-Optimize: We can remove this branch, if ray-scene intersection returns infinite distance by default
-            if (shadowRayHitResult.ObjectId.Type != ObjectType::None) {
-                const auto hitDistanceSq = shadowRayHitResult.Distance * shadowRayHitResult.Distance;
-                if (hitDistanceSq < lightDistanceSq) {
-                    // Shadow ray intersects with an object before light, no contribution from this light
-                    continue;
-                }
+        // TODO-Optimize: We can remove this branch, if ray-scene intersection returns infinite distance by default
+        if (shadowRayHitResult.ObjectId.Type != ObjectType::None) {
+            const auto hitDistanceSq = shadowRayHitResult.Distance * shadowRayHitResult.Distance;
+            if (hitDistanceSq < lightDistanceSq) {
+                // Shadow ray intersects with an object before light, no contribution from this light
+                continue;
             }
-
-            // Shadow ray hit this object again, shouldn't happen
-            Debug::Assert(shadowRayHitResult.ObjectId != pixelRayHitObject, "ShadowRayHitSameObject");
         }
+
+        // Shadow ray hit this object again, shouldn't happen
+        Debug::Assert(shadowRayHitResult.ObjectId != pixelRayHitObject, "ShadowRayHitSameObject");
 
         const auto receivedIrradiance = pointLight.Intensity / lightDistanceSq;
         const auto diffuseRgb = CalculateDiffuse(receivedIrradiance, material.DiffuseReflectance, surfaceNormal,lightDirection);
