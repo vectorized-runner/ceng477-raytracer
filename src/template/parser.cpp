@@ -58,7 +58,7 @@ void parser::p_scene::loadFromXml(const std::string &filepath)
 
     //Get Cameras
     element = root->FirstChildElement("Cameras");
-    element = element->FirstChildElement("p_camera");
+    element = element->FirstChildElement("Camera");
     p_camera camera;
     while (element)
     {
@@ -86,7 +86,7 @@ void parser::p_scene::loadFromXml(const std::string &filepath)
         stream >> camera.image_name;
 
         cameras.push_back(camera);
-        element = element->NextSiblingElement("p_camera");
+        element = element->NextSiblingElement("Camera");
     }
 
     //Get Lights
