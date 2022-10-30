@@ -126,6 +126,8 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
             meshTriangle.Vertex2 = float3(v2.x, v2.y, v2.z);
             mesh.TriangleNormals[j] = triangles[i].GetNormal();
         }
+
+        mesh.CalculateAABB();
     }
 
     MeshData meshData;
@@ -151,8 +153,7 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
 
     scene.AmbientLight = ambientLightData;
 
-    // TODO: Mesh AABB
-    // TODO: Scene AABB
+    scene.CalculateAABB();
 
     delete[] materials;
     delete[] vertices;
