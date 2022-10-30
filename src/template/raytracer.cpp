@@ -49,6 +49,7 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
     imagePlanes = new ImagePlane[CameraCount];
     outputFileNames = new string[CameraCount];
     outputColors = new Rgb*[CameraCount];
+
     for (int i = 0; i < CameraCount; ++i) {
         const auto& parseCam = parseScene.cameras[i];
         auto& camera = cameras[i];
@@ -61,7 +62,8 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
         plane.Resolution = Resolution(parseCam.image_width, parseCam.image_height);
         plane.DistanceToCamera = parseCam.near_distance;
 
-        outputColors[i] = new Rgb[plane.Resolution.X * plane.Resolution.Y];
+        auto pixelCount = plane.Resolution.X * plane.Resolution.Y;
+        outputColors[i] = new Rgb[pixelCount];
 
         auto left = parseCam.near_plane.x;
         auto right = parseCam.near_plane.y;
@@ -301,51 +303,38 @@ int main(int argc, char *argv[]) {
     cout << "Convert Template Data into Scene Data completed.";
 
     for (int i = 0; i < CameraCount; ++i) {
-        CastPixelRays(cameras[i], imagePlanes[i], outputColors[i]);
+        auto colors = outputColors[i];
+        auto plane = imagePlanes[i];
+        auto camera = cameras[i];
+        auto pixelCountX = plane.Resolution.X;
+        auto pixelCountY = plane.Resolution.Y;
+        auto pixelCount = pixelCountX * pixelCountY;
 
-        // TODO: Convert to ppm color data
-        // TODO: Write ppm
-    }
+        CastPixelRays(camera, plane, colors);
 
-    // The code below creates a test pattern and writes
-    // it to a PPM file to demonstrate the usage of the
-    // ppm_write function.
-    //
-    // Normally, you would be running your ray tracing
-    // code here to produce the desired image.
+        auto *image = new unsigned char[pixelCount * 3];
 
-    const RGB BAR_COLOR[8] =
-            {
-                    {255, 255, 255},  // 100% White
-                    {255, 255, 0},  // Yellow
-                    {0,   255, 255},  // Cyan
-                    {0,   255, 0},  // Green
-                    {255, 0,   255},  // Magenta
-                    {255, 0,   0},  // Red
-                    {0,   0,   255},  // Blue
-                    {0,   0,   0},  // Black
-            };
+        for (int j = 0; j < pixelCount; ++j) {
 
-    int width = 640, height = 480;
-    int columnWidth = width / 8;
-
-    unsigned char *image = new unsigned char[width * height * 3];
-
-    int i = 0;
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
-            int colIdx = x / columnWidth;
-            image[i++] = BAR_COLOR[colIdx][0];
-            image[i++] = BAR_COLOR[colIdx][1];
-            image[i++] = BAR_COLOR[colIdx][2];
+            int i = 0;
+            for (int y = 0; y < height; ++y) {
+                for (int x = 0; x < width; ++x) {
+                    int colIdx = x / columnWidth;
+                    image[i++] = BAR_COLOR[colIdx][0];
+                    image[i++] = BAR_COLOR[colIdx][1];
+                    image[i++] = BAR_COLOR[colIdx][2];
+                }
+            }
         }
+
+        cout << "Writing to RAM buffer completed" << endl;
+
+        write_ppm("test.ppm", image, pixelCountX, pixelCountY);
+
+        cout << "Writing PPM file completed." << endl;
+
+        delete[] image;
     }
-
-    cout << "Writing to RAM buffer completed" << endl;
-
-    write_ppm("test.ppm", image, width, height);
-
-    cout << "Writing PPM file completed." << endl;
 
     FreeResources();
 
