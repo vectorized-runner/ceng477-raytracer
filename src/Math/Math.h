@@ -52,6 +52,10 @@ namespace RayTracer {
             return Dot(v, v);
         }
 
+        static float DistanceSq(float3 x, float3 y) {
+            return LengthSq(y - x);
+        }
+
         static bool IsLengthEqual(float3 v, float length) {
             return abs(LengthSq(v) - length * length) < Epsilon;
         }
