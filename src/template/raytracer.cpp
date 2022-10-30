@@ -69,8 +69,6 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene){
         outputFileNames[i] = parseCam.image_name;
     }
 
-    // TODO: Parse cameras here.
-
     auto ambientLight = parseScene.ambient_light;
     AmbientLightData ambientLightData;
     ambientLightData.Radiance = float3(ambientLight.x, ambientLight.y, ambientLight.z);
