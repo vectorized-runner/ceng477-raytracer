@@ -47,7 +47,6 @@ namespace RayTracer {
             SelfAABB = aabb;
         }
 
-        // TODO-Port:
         static bool RayAABBIntersection(Ray ray, const AABB box) {
             auto inverseDir = float3u(Math::Rcp(ray.Direction));
             auto tmin = 0.0f;
@@ -66,7 +65,6 @@ namespace RayTracer {
             return tmin <= tmax;
         }
 
-        // TODO-Port:
         static bool RayTriangleIntersection(Ray ray, Triangle triangle, float& intersectionDistance) {
             auto vertex0 = triangle.Vertex0;
             auto vertex1 = triangle.Vertex1;
@@ -79,7 +77,7 @@ namespace RayTracer {
 
             if (a > -epsilon && a < epsilon) {
                 intersectionDistance = 0.0f;
-                return false; // This ray is parallel to this triangle.
+                return false;
             }
 
             auto f = 1.0f / a;
@@ -97,24 +95,17 @@ namespace RayTracer {
                 return false;
             }
 
-            // At this stage we can compute t to find out where the intersection point is on the line.
             auto t = f * Math::Dot(edge2, q);
-            if (t > epsilon) // ray intersection
+            if (t > epsilon)
             {
                 intersectionDistance = t;
                 return true;
             }
 
-            // This means that there is a line intersection but not a ray intersection.
             intersectionDistance = 0.0f;
             return false;
         }
 
-        // TODO-Port:
-        // TODO-Optimize: Skip Quadratic Equation part, use the most optimized math formula only
-        // TODO-Optimize: Store RadiusSquared on Spheres?
-        // TODO-Optimize: Only need to return for 1 root, not 2 roots, not used.
-        // TODO-Optimize: On 2 root case, if t0 is greater than zero, we don't have to check t1.
         static bool RaySphereIntersection(Ray ray, Sphere sphere, float& closestIntersectionDistance) {
             Debug::Assert(Math::IsNormalized(ray.Direction), "Ray isn't normalized.");
 
