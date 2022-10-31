@@ -175,40 +175,39 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
     }
 
     auto meshCount = parseScene.meshes.size();
-    Debug::Assert(meshCount > 0, "MeshCount");
+    if(meshCount > 0){
+        auto meshes = new Mesh[meshCount];
+        for (int i = 0; i < meshCount; ++i) {
+            const auto& parseMesh = parseScene.meshes[i];
+            auto& mesh = meshes[i];
+            auto meshTriangles = parseMesh.faces.size();
+            mesh.MaterialData = materials[parseMesh.material_id - 1];
+            mesh.TriangleCount = meshTriangles;
+            mesh.Triangles = new Triangle[meshTriangles];
+            mesh.TriangleNormals = new float3[meshTriangles];
 
-    auto meshes = new Mesh[meshCount];
-    for (int i = 0; i < meshCount; ++i) {
-        const auto& parseMesh = parseScene.meshes[i];
-        auto& mesh = meshes[i];
-        auto meshTriangles = parseMesh.faces.size();
-        mesh.MaterialData = materials[parseMesh.material_id - 1];
-        mesh.TriangleCount = meshTriangles;
-        mesh.Triangles = new Triangle[meshTriangles];
-        mesh.TriangleNormals = new float3[meshTriangles];
+            for (int j = 0; j < meshTriangles; ++j) {
+                const auto& parseTriangle = parseMesh.faces[j];
+                auto& meshTriangle = mesh.Triangles[j];
+                auto& meshNormal = mesh.TriangleNormals[j];
+                auto v0 = vertices[parseTriangle.v0_id - 1];
+                auto v1 = vertices[parseTriangle.v1_id - 1];
+                auto v2 = vertices[parseTriangle.v2_id - 1];
+                meshTriangle.Vertex0 = float3(v0.x, v0.y, v0.z);
+                meshTriangle.Vertex1 = float3(v1.x, v1.y, v1.z);
+                meshTriangle.Vertex2 = float3(v2.x, v2.y, v2.z);
+                meshNormal = meshTriangle.GetNormal();
+            }
 
-        for (int j = 0; j < meshTriangles; ++j) {
-            const auto& parseTriangle = parseMesh.faces[j];
-            auto& meshTriangle = mesh.Triangles[j];
-            auto& meshNormal = mesh.TriangleNormals[j];
-            auto v0 = vertices[parseTriangle.v0_id - 1];
-            auto v1 = vertices[parseTriangle.v1_id - 1];
-            auto v2 = vertices[parseTriangle.v2_id - 1];
-            meshTriangle.Vertex0 = float3(v0.x, v0.y, v0.z);
-            meshTriangle.Vertex1 = float3(v1.x, v1.y, v1.z);
-            meshTriangle.Vertex2 = float3(v2.x, v2.y, v2.z);
-            meshNormal = meshTriangle.GetNormal();
+            mesh.CalculateAABB();
         }
 
-        mesh.CalculateAABB();
+        MeshData meshData;
+        meshData.Count = meshCount;
+        meshData.Meshes = meshes;
+
+        scene.MeshData = meshData;
     }
-
-    MeshData meshData;
-    meshData.Count = meshCount;
-    meshData.Meshes = meshes;
-
-
-    scene.MeshData = meshData;
 
     scene.PointLights.Count = pointLightCount;
     scene.PointLights.PointLights = pointLights;
