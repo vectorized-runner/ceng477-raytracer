@@ -231,10 +231,10 @@ CalculateDiffuse(float3 receivedIrradiance, float3 diffuseReflectance, float3 su
     return Rgb(diffuseReflectance * cosNormalAndLightDir * receivedIrradiance);
 }
 
-Ray Reflect(float3 surfacePoint, float3 surfaceNormal, float3 cameraDirection) {
+Ray Reflect(float3 surfacePoint, float3 surfaceNormal, float3 rayDirection) {
     auto newRayOrigin = surfacePoint + surfaceNormal * ShadowRayEpsilon;
-    auto newRayNormal = 2 * surfaceNormal * Math::Dot(cameraDirection, surfaceNormal) - cameraDirection;
-    return Ray(newRayOrigin, newRayNormal);
+    auto newNormal = -rayDirection + (2 * Math::Dot(rayDirection, surfaceNormal) * surfaceNormal);
+    return Ray(newRayOrigin, newNormal);
 }
 
 Rgb CalculateSpecular(float3 lightDirection, float3 cameraDirection, float3 surfaceNormal,
@@ -314,7 +314,7 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
     GetSurfaceNormalAndMaterial(surfacePoint, pixelRayHitObject, surfaceNormal, material);
 
     auto color = CalculateAmbient(material.AmbientReflectance, scene.AmbientLight.Radiance);
-    auto cameraDirection = Math::Normalize(cameraPosition - surfacePoint);
+    auto rayDirection = -pixelRay.Direction;
 
     for (int i = 0; i < scene.PointLights.Count; ++i) {
         const auto pointLight = scene.PointLights.PointLights[i];
@@ -340,14 +340,14 @@ Rgb Shade(Ray pixelRay, float3 cameraPosition, int currentRayBounce) {
         const auto receivedIrradiance = pointLight.Intensity / lightDistanceSq;
         const auto diffuseRgb = CalculateDiffuse(receivedIrradiance, material.DiffuseReflectance, surfaceNormal,
                                                  lightDirection);
-        const auto specularRgb = CalculateSpecular(lightDirection, cameraDirection, surfaceNormal,
+        const auto specularRgb = CalculateSpecular(lightDirection, rayDirection, surfaceNormal,
                                                    material.SpecularReflectance, receivedIrradiance,
                                                    material.PhongExponent);
         color = color + specularRgb + diffuseRgb;
     }
 
     if (material.IsMirror && currentRayBounce < MaxBounces) {
-        auto reflectRay = Reflect(surfacePoint, surfaceNormal, cameraDirection);
+        auto reflectRay = Reflect(surfacePoint, surfaceNormal, rayDirection);
         auto mirrorReflectance = material.MirrorReflectance;
         color = color + Rgb(mirrorReflectance * Shade(reflectRay, cameraPosition, currentRayBounce + 1).Value);
     }
