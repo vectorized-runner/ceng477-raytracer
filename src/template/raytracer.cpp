@@ -237,10 +237,10 @@ Ray Reflect(float3 surfacePoint, float3 surfaceNormal, float3 rayDirection) {
     return Ray(newRayOrigin, newNormal);
 }
 
-Rgb CalculateSpecular(float3 lightDirection, float3 cameraDirection, float3 surfaceNormal,
+Rgb CalculateSpecular(float3 lightDirection, float3 rayDirection, float3 surfaceNormal,
                       float3 specularReflectance, float3 receivedIrradiance, float phongExponent) {
     Debug::Assert(Math::IsNormalized(lightDirection), "LightDir");
-    Debug::Assert(Math::IsNormalized(cameraDirection), "CameraDir");
+    Debug::Assert(Math::IsNormalized(rayDirection), "RayDir");
     Debug::Assert(Math::IsNormalized(surfaceNormal), "SurfaceNormal");
 
     auto lightDotNormal = Math::Dot(lightDirection, surfaceNormal);
@@ -254,7 +254,7 @@ Rgb CalculateSpecular(float3 lightDirection, float3 cameraDirection, float3 surf
         return Rgb(0);
     }
 
-    auto v = lightDirection + cameraDirection;
+    auto v = lightDirection + rayDirection;
     auto halfwayVector = v / Math::Length(v);
     Debug::Assert(Math::IsNormalized(halfwayVector), "Halfway");
 
