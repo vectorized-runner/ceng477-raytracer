@@ -75,10 +75,11 @@ namespace RayTracer {
             auto a = Math::Dot(edge1, h);
             auto epsilon = Math::Epsilon;
 
-            if (a > -epsilon && a < epsilon) {
-                intersectionDistance = 0.0f;
-                return false;
-            }
+            // No, this fails for some models
+//            if (a > -epsilon && a < epsilon) {
+//                intersectionDistance = 0.0f;
+//                return false;
+//            }
 
             auto f = 1.0f / a;
             auto s = ray.Origin - vertex0;
