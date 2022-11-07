@@ -130,19 +130,19 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
     auto sphereCount = parseScene.spheres.size();
     if (sphereCount > 0) {
         auto spheres = new Sphere[sphereCount];
-        auto sphereMaterials = new MaterialData[sphereCount];
+        auto sphereMaterialIndices = new char[sphereCount];
 
         for (int i = 0; i < sphereCount; ++i) {
             const auto& parseSphere = parseScene.spheres[i];
             auto& sphere = spheres[i];
             sphere.RadiusSquared = parseSphere.radius * parseSphere.radius;
             sphere.Center = vertices[parseSphere.center_vertex_id - 1];
-            sphereMaterials[i] = materials[parseSphere.material_id - 1];
+            sphereMaterialIndices[i] = (char)(parseSphere.material_id - 1);
         }
 
         SphereData sphereData;
         sphereData.Count = sphereCount;
-        sphereData.Materials = sphereMaterials;
+        sphereData.MaterialIndices = sphereMaterialIndices;
         sphereData.Spheres = spheres;
 
         scene.SphereData = sphereData;
@@ -151,7 +151,7 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
     auto triangleCount = parseScene.triangles.size();
     if (triangleCount > 0) {
         auto triangles = new Triangle[triangleCount];
-        auto triangleMaterials = new MaterialData[triangleCount];
+        auto triangleMaterialIndices = new char[triangleCount];
         auto triangleNormals = new float3[triangleCount];
         for (int i = 0; i < triangleCount; ++i) {
             const auto& parseTriangle = parseScene.triangles[i];
@@ -162,13 +162,13 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
             triangles[i].Vertex1 = float3(v1.x, v1.y, v1.z);
             triangles[i].Vertex2 = float3(v2.x, v2.y, v2.z);
             triangleNormals[i] = triangles[i].GetNormal();
-            triangleMaterials[i] = materials[parseTriangle.material_id - 1];
+            triangleMaterialIndices[i] = (char)(parseTriangle.material_id - 1);
         }
 
         TriangleData triangleData;
         triangleData.Count = triangleCount;
         triangleData.Triangles = triangles;
-        triangleData.Materials = triangleMaterials;
+        triangleData.MaterialIndices = triangleMaterialIndices;
         triangleData.Normals = triangleNormals;
 
         scene.TriangleData = triangleData;
@@ -181,7 +181,7 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
             const auto& parseMesh = parseScene.meshes[i];
             auto& mesh = meshes[i];
             auto meshTriangles = parseMesh.faces.size();
-            mesh.MaterialData = materials[parseMesh.material_id - 1];
+            mesh.MaterialIndex = (char)(parseMesh.material_id - 1);
             mesh.TriangleCount = meshTriangles;
             mesh.Triangles = new Triangle[meshTriangles];
             mesh.TriangleNormals = new float3[meshTriangles];
@@ -214,9 +214,10 @@ void ConvertTemplateDataIntoSelfData(parser::p_scene& parseScene) {
 
     scene.AmbientLight = ambientLightData;
 
+    scene.Materials = materials;
+
     scene.CalculateAABB();
 
-    delete[] materials;
     delete[] vertices;
 }
 
@@ -273,17 +274,17 @@ void GetSurfaceNormalAndMaterial(float3 surfacePoint, ObjectId id, float3& outNo
     switch (id.Type) {
         case ObjectType::SphereObject: {
             outNormal = GetSphereNormal(surfacePoint, id.Index);
-            outMaterial = scene.SphereData.Materials[id.Index];
+            outMaterial = scene.Materials[scene.SphereData.MaterialIndices[id.Index]];
             return;
         }
         case ObjectType::TriangleObject: {
             outNormal = scene.TriangleData.Normals[id.Index];
-            outMaterial = scene.TriangleData.Materials[id.Index];
+            outMaterial = scene.Materials[scene.TriangleData.MaterialIndices[id.Index]];
             return;
         }
         case ObjectType::MeshTriangleObject: {
             outNormal = scene.MeshData.Meshes[id.MeshIndex].TriangleNormals[id.Index];
-            outMaterial = scene.MeshData.Meshes[id.MeshIndex].MaterialData;
+            outMaterial = scene.Materials[scene.MeshData.Meshes[id.MeshIndex].MaterialIndex];
             return;
         }
         case ObjectType::None: {

@@ -11,7 +11,7 @@ namespace RayTracer {
         int Count;
         Triangle* Triangles;
         float3* Normals;
-        MaterialData* Materials;
+        char* MaterialIndices;
     }; // RayTracer
 }
 #endif //CENG477_RAYTRACER_TRIANGLEDATA_H

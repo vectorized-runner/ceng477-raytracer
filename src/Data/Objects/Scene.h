@@ -21,8 +21,8 @@ namespace RayTracer {
         SphereData SphereData;
         PointLightData PointLights;
         AmbientLight AmbientLight;
-
         AABB SelfAABB;
+        MaterialData* Materials;
 
         void CalculateAABB() {
             auto aabb = AABB();

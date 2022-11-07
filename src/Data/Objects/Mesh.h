@@ -13,7 +13,7 @@ namespace RayTracer {
         Triangle* Triangles;
         float3* TriangleNormals;
         AABB SelfAABB;
-        MaterialData MaterialData;
+        char MaterialIndex;
 
         void CalculateAABB() {
             auto aabb = AABB();
